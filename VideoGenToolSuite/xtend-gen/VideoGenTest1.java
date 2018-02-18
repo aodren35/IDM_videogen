@@ -11,11 +11,14 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.junit.Assert;
 import org.junit.Test;
+import org.xtext.example.mydsl.videoGen.AlternativeVideoSeq;
 import org.xtext.example.mydsl.videoGen.MandatoryVideoSeq;
 import org.xtext.example.mydsl.videoGen.Media;
+import org.xtext.example.mydsl.videoGen.OptionalVideoSeq;
 import org.xtext.example.mydsl.videoGen.VideoDescription;
 import org.xtext.example.mydsl.videoGen.VideoGeneratorModel;
 import org.xtext.example.mydsl.videoGen.VideoSeq;
+import utils.Randomiser;
 
 @SuppressWarnings("all")
 public class VideoGenTest1 {
@@ -36,6 +39,30 @@ public class VideoGenTest1 {
             String _plus_1 = (_plus + "\'");
             playlist.add(_plus_1);
           }
+          if ((video instanceof OptionalVideoSeq)) {
+            final VideoDescription desc_1 = ((OptionalVideoSeq)video).getDescription();
+            final Randomiser rd = new Randomiser();
+            rd.setChoices(1);
+            int _randomize = rd.randomize();
+            boolean _equals = (_randomize == 1);
+            if (_equals) {
+              String _location_1 = desc_1.getLocation();
+              String _plus_2 = ("file \'" + _location_1);
+              String _plus_3 = (_plus_2 + "\'");
+              playlist.add(_plus_3);
+            }
+          }
+          if ((video instanceof AlternativeVideoSeq)) {
+            final AlternativeVideoSeq alts = ((AlternativeVideoSeq) video);
+            final Randomiser rd_1 = new Randomiser();
+            rd_1.setChoices(alts.getVideodescs().size());
+            final int selected = rd_1.randomize();
+            final VideoDescription videodesc = alts.getVideodescs().get(selected);
+            String _location_2 = videodesc.getLocation();
+            String _plus_4 = ("file \'" + _location_2);
+            String _plus_5 = (_plus_4 + "\'");
+            playlist.add(_plus_5);
+          }
         }
       };
       videoGen.getMedias().forEach(_function);
@@ -46,7 +73,7 @@ public class VideoGenTest1 {
       }
       this.writeInFile("playlist.txt", playlistStr);
       Process p = null;
-      String ffmpegCmd = this.ffmpegConcatenateCommand("/Users/macher1/git/teaching-MDE-MIAGE1718/VideoGenToolSuite/playlist.txt", "ro.mp4").toString();
+      String ffmpegCmd = this.ffmpegConcatenateCommand("C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/playlist.txt", "ressources/gen/ro.mp4").toString();
       InputOutput.<String>println(ffmpegCmd);
       p = Runtime.getRuntime().exec(ffmpegCmd);
       p.waitFor();
@@ -80,7 +107,7 @@ public class VideoGenTest1 {
   
   public CharSequence ffmpegConcatenateCommand(final String mpegPlaylistFile, final String outputPath) {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append("/usr/local/bin/ffmpeg -y -f concat -safe 0 -i ");
+    _builder.append("ffmpeg -y -f concat -safe 0 -i ");
     _builder.append(mpegPlaylistFile);
     _builder.append(" -c copy ");
     _builder.append(outputPath);
