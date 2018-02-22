@@ -42,6 +42,7 @@ public class VideoGenTest1 {
       final String file = "example1.videogen";
       VideoGen _videoGen = new VideoGen(file);
       this.vg = _videoGen;
+      this.vg.clean();
       this.vg.generate();
       InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
       Assert.assertEquals(this.vg.generateAllVars().size(), this.vg.nbVariantes());
@@ -62,6 +63,7 @@ public class VideoGenTest1 {
     final String file = "example2.videogen";
     VideoGen _videoGen = new VideoGen(file);
     this.vg = _videoGen;
+    this.vg.clean();
     this.vg.generate();
     InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
     Assert.assertEquals(this.vg.nbVariantes(), this.vg.generateAllVars().size());
@@ -77,6 +79,7 @@ public class VideoGenTest1 {
       final String file = "example3.videogen";
       VideoGen _videoGen = new VideoGen(file);
       this.vg = _videoGen;
+      this.vg.clean();
       this.vg.generate();
       InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
       Assert.assertEquals(this.vg.nbVariantes(), this.vg.generateAllVars().size());
@@ -98,6 +101,7 @@ public class VideoGenTest1 {
       final String file = "example4.videogen";
       VideoGen _videoGen = new VideoGen(file);
       this.vg = _videoGen;
+      this.vg.clean();
       this.vg.generate();
       InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
       Assert.assertEquals(this.vg.nbVariantes(), this.vg.generateAllVars().size());
@@ -119,6 +123,7 @@ public class VideoGenTest1 {
       final String file = "example5.videogen";
       VideoGen _videoGen = new VideoGen(file);
       this.vg = _videoGen;
+      this.vg.clean();
       this.vg.generate();
       InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
       Assert.assertEquals(this.vg.nbVariantes(), this.vg.generateAllVars().size());
@@ -140,6 +145,7 @@ public class VideoGenTest1 {
       final String file = "example6.videogen";
       VideoGen _videoGen = new VideoGen(file);
       this.vg = _videoGen;
+      this.vg.clean();
       this.vg.generate();
       InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
       Assert.assertEquals(this.vg.nbVariantes(), this.vg.generateAllVars().size());
@@ -161,6 +167,7 @@ public class VideoGenTest1 {
       final String file = "example7.videogen";
       VideoGen _videoGen = new VideoGen(file);
       this.vg = _videoGen;
+      this.vg.clean();
       this.vg.generate();
       InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
       Assert.assertEquals(this.vg.nbVariantes(), this.vg.generateAllVars().size());
@@ -182,6 +189,7 @@ public class VideoGenTest1 {
       final String file = "example8.videogen";
       VideoGen _videoGen = new VideoGen(file);
       this.vg = _videoGen;
+      this.vg.clean();
       this.vg.generate();
       InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
       Assert.assertEquals(this.vg.nbVariantes(), this.vg.generateAllVars().size());
@@ -203,6 +211,7 @@ public class VideoGenTest1 {
       final String file = "example9.videogen";
       VideoGen _videoGen = new VideoGen(file);
       this.vg = _videoGen;
+      this.vg.clean();
       this.vg.generate();
       InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
       Assert.assertEquals(this.vg.nbVariantes(), this.vg.generateAllVars().size());

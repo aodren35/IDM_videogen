@@ -30,6 +30,7 @@ class VideoGen {
 	private  List<VideoDescription> allVideos = new ArrayList<VideoDescription>()
 	private  List<List<VideoDescription>> videoGenListed = new ArrayList<List<VideoDescription>>()
 	private  List<List<VideoDescription>> allVars = new ArrayList<List<VideoDescription>>()
+	private List<String> listId = new ArrayList<String>()
 	
 	private String tag = ""
 	private String uri = ""
@@ -84,12 +85,137 @@ class VideoGen {
 		return allVideos
 	}
 	
+	def void clean() {
+		var index = 0
+		videoGenUpdated = videoGen
+		for (Media media : videoGenUpdated.medias) {
+			val video = (media as VideoSeq)
+				if (video instanceof MandatoryVideoSeq) {
+					cleanMandatory(video.description, index)
+					index ++
+				}
+				if (video instanceof OptionalVideoSeq) {
+					cleanOptional(video.description, index)
+					index ++
+				}
+				if (video instanceof AlternativeVideoSeq) {
+					var total = 0
+					if (video.videodescs.size == 0) {
+						videoGen.medias.remove(video)
+					}
+					cleanId(video, index)
+					index ++
+					for (VideoDescription v: video.videodescs) {
+						total += cleanAlternative(v, index, total, video.videodescs.size)
+						index ++
+					}
+				}
+		}
+
+	}
+	
+	def void cleanAndGenerateFilter(VideoDescription desc) {
+		
+	}
+	
+	def void cleanId(AlternativeVideoSeq desc, int index) {
+		if (desc.videoid === ""){
+			desc.videoid = 	 "alternative"+"_"+tag+"_"+index
+		}
+		while (idExists(desc.videoid)){
+			desc.videoid = desc.videoid + "_"+index
+		}
+		
+	}
+	
+	def String cleanMandatory(VideoDescription desc, int index) {
+		if (desc.videoid === ""){
+			desc.videoid = 	 "video_mandatory"+"_"+tag+"_"+index
+		}
+		while (idExists(desc.videoid)){
+			desc.videoid = desc.videoid + "_"+index
+		}
+		
+		if (desc.duration as Integer === null) {
+			val dur =  (videoDuration(desc.location) + 0) as Integer
+			desc.duration = dur
+		} else {
+			if (desc.duration < 0) {
+				val dur =  (videoDuration(desc.location) + 0) as Integer
+				desc.duration = dur
+			}
+		}
+		desc.probability = 100
+		if (desc.description === "") {
+			desc.description = "video_mandatory_"+index+"_"+tag
+		}
+		return ''
+	}
+	
+	def String cleanOptional(VideoDescription desc, int index) {
+		
+		if (desc.videoid === ""){
+			desc.videoid = 	 "video_optional"+"_"+tag+"_"+index
+		}
+		while (idExists(desc.videoid)){
+			desc.videoid = desc.videoid + "_"+index
+		}
+		if (desc.duration as Integer === null) {
+			val dur =  (videoDuration(desc.location) + 0) as Integer
+			desc.duration = dur
+		} else {
+			if (desc.duration < 0) {
+				val dur =  (videoDuration(desc.location) + 0) as Integer
+				desc.duration = dur
+			}
+		}
+		if (desc.probability >= 100 || desc.probability <= 0) {
+			desc.probability = 50
+		}
+		if (desc.description === "") {
+			desc.description = "video_optional_"+index+"_"+tag
+		}
+		return ''
+	}
+	
+	def int cleanAlternative(VideoDescription desc, int index, int tot, int size) {
+		if (desc.videoid === ""){
+			desc.videoid = 	 "video_alternative"+"_"+tag+"_"+index
+		}
+		while (idExists(desc.videoid)){
+			desc.videoid = desc.videoid + "_"+index
+		}
+		var int prob
+		if (desc.duration as Integer === null) {
+			val dur =  (videoDuration(desc.location) + 0) as Integer
+			desc.duration = dur
+		} else {
+			if (desc.duration < 0) {
+				val dur =  (videoDuration(desc.location) + 0) as Integer
+				desc.duration = dur
+			}
+		}
+		if (desc.probability >= 100 || desc.probability <= 0) {
+			desc.probability = (1/size) * 100
+		}
+		if ((desc.probability + tot) > 100) {
+			desc.probability = 100 - tot
+			if (desc.probability < 0) desc.probability = 0
+		}
+		if (desc.description === "") {
+			desc.description = "video_alternative_"+index+"_"+tag
+		}
+		return desc.probability
+	}
+	
+	
 	// TODO : ajouter duration si absentes (voir faire une fonction globale qui fait tout)
 	def String generate() {
 		// and then visit the model
 		// eg access video sequences: 
 		val playlist = newArrayList()
-		videoGen.medias.forEach [media |
+		var index = 0
+		for (Media media: videoGen.medias){
 			
 			if (media instanceof VideoSeq) {			
 				val video = (media as VideoSeq)
@@ -97,12 +223,14 @@ class VideoGen {
 				if (video instanceof MandatoryVideoSeq) {
 					val desc =  video.description
 					val dur =  (videoDuration(desc.location) + 0) as Integer
+					var newLoc = desc.location
 					desc.duration = dur
-					playlist.add("file '" + desc.location + "'"+ " duration "+ dur)
+					playlist.add("file '" + newLoc + "'"+ " duration "+ dur)
 					
 					var List<VideoDescription> lempty = new ArrayList<VideoDescription>()
 					lempty.add(desc)
 					videoGenListed.add(lempty)
+					index ++
 						
 				}
 				if (video instanceof OptionalVideoSeq) {
@@ -119,6 +247,7 @@ class VideoGen {
 					var List<VideoDescription> lempty = new ArrayList<VideoDescription>()
 					lempty.add(desc)
 					videoGenListed.add(lempty)
+					index ++
 					
 				}
 				if (video instanceof AlternativeVideoSeq) {
@@ -138,15 +267,16 @@ class VideoGen {
 						lempty.add(va)
 					}
 					videoGenListed.add(lempty)
+					index ++
 				}	
 			}
-		]
+		}
 		
 		var playlistStr = ""
 		for (String pl : playlist)
 			playlistStr += pl + "\n"
 		
-		videoGenUpdated = videoGen
+		// videoGenUpdated = videoGen
 		// new VideoGenHelper().saveVideoGenerator(URI.createURI(uri), videoGenUpdated)
 		return playlistStr
 		
@@ -156,7 +286,12 @@ class VideoGen {
 	def String generateFromVideoDescriptions(List<VideoDescription> l) {
 		val playlist = newArrayList()
 		for (VideoDescription v: l) {
-				playlist.add("file '" + v.location + "'"+ " duration "+ v.duration + " inpoint " + "0")
+			var newLoc = v.location
+			if (v.text.content !== "") {
+				newLoc = tag + "_" + v.videoid + ".MTS"
+				generateVideoFilteredWithText(v, v.location, newLoc)
+			}
+			playlist.add("file '" + PATH_GEN_RELATIVE + newLoc + "'"+ " duration "+ v.duration + " inpoint " + "0")
 		}
 		var playlistStr = ""
 		for (String pl : playlist)
@@ -209,7 +344,7 @@ class VideoGen {
 			}
 			
 		}
-		videoGenUpdated = videoGen
+		// videoGenUpdated = videoGen
 	}
 
 	def int getLongestVar() {
@@ -271,6 +406,40 @@ class VideoGen {
 		var ffmpegCmd = ffmpegConcatenateCommand(PATH_TOOL + source, PATH_GEN_RELATIVE + target).toString 
 		println(ffmpegCmd)
 		
+	 	p = Runtime.runtime.exec(ffmpegCmd)
+		if(!p.waitFor(20, TimeUnit.SECONDS)) {
+    		//timeout - kill the process. 
+    		p.destroyForcibly()
+		}
+	}
+	
+	def void generateVideoFilteredWithText(VideoDescription desc, String source, String target) {
+		var Process p 
+		var text = desc.text.content
+		var x = 50
+		var y = 0
+		var color = desc.text.color
+		var size = desc.text.size
+		var String ffmpegCmd
+		if (size == 0) { 
+			size = 20
+		}
+		switch desc.text.position {
+  			case 'TOP' : {
+  				ffmpegCmd = ffmpegDrawTextTOP(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text,  color, size).toString 
+  			}
+  			case 'BOTTOM' : {
+  				ffmpegCmd = ffmpegDrawTextBOTTOM(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text, color, size).toString 
+  			}
+  			case 'CENTER': {
+  				ffmpegCmd = ffmpegDrawTextCENTER(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text, color, size).toString 
+  			}
+  			default : ffmpegCmd = ffmpegDrawTextCENTER(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text, color, size).toString 
+		}
+
+
+		
+		println(ffmpegCmd)
 	 	p = Runtime.runtime.exec(ffmpegCmd)
 		if(!p.waitFor(20, TimeUnit.SECONDS)) {
     		//timeout - kill the process. 
@@ -534,6 +703,17 @@ class VideoGen {
 		return false;
 	}
 
+	def ffmpegDrawTextTOP(String inputPath, String outputPath, String text,   String color, int size) '''
+		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:fontsize=«size»:fontcolor=«color»" «outputPath» -y
+	'''
+	
+	def ffmpegDrawTextCENTER(String inputPath, String outputPath, String text,  String color, int size) '''
+		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=«size»:fontcolor=«color»" «outputPath» -y
+	'''
+	def ffmpegDrawTextBOTTOM(String inputPath, String outputPath, String text, String color, int size) '''
+		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:y=(h-text_h):fontsize=«size»:fontcolor=«color»" «outputPath» -y
+	'''
+
 	def ffmpegConcatenateCommand(String mpegPlaylistFile, String outputPath) '''
 			 ffmpeg -y -f concat -safe 0 -i «mpegPlaylistFile» -c copy -r 24 «outputPath»
 		'''
@@ -557,14 +737,22 @@ class VideoGen {
 		if (time != 0) { 
 			return 
 				''' 
-		 		ffmpeg -i «videoLocation» -y -ss 0 -pix_fmt rgb24 -r 10 -t «time» -s «w»x«l»  «outputPath»
+		 		ffmpeg -i «videoLocation» -y -ss 0 -pix_fmt rgb8 -r 10 -t «time» -s «w»x«l»  «outputPath»
 				'''
 		} else {
 			return 
 				''' 
-				 ffmpeg -i «videoLocation» -y -ss 0 -pix_fmt rgb24 -r 10 -s «w»x«l»  «outputPath»
+				 ffmpeg -i «videoLocation» -y -ss 0 -pix_fmt rgb8 -r 10 -s «w»x«l»  «outputPath»
 				'''
 		}
+	}
+	
+	
+	def boolean idExists(String id) {
+		for (String s : listId) {
+			if (s == id) return true
+		}
+		return false
 	}
 
 }

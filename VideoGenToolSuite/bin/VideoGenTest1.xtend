@@ -48,6 +48,7 @@ class VideoGenTest1 {
 	def void testExample1() {
 		val file = "example1.videogen"
 		vg = new VideoGen(file)
+				vg.clean()
 		vg.generate()
 		println(vg.nbVariantes())
 		assertEquals( vg.generateAllVars().size, vg.nbVariantes)
@@ -63,6 +64,7 @@ class VideoGenTest1 {
 	def void testExample2() {
 		val file = "example2.videogen"
 		vg = new VideoGen(file)
+		vg.clean()
 		vg.generate()
 		println(vg.nbVariantes())
 		assertEquals(vg.nbVariantes(), vg.generateAllVars().size)
@@ -79,6 +81,7 @@ class VideoGenTest1 {
 	def void testExample3() {
 		val file = "example3.videogen"
 		vg = new VideoGen(file)
+		vg.clean()
 		vg.generate()
 		println(vg.nbVariantes())
 		assertEquals(vg.nbVariantes(), vg.generateAllVars().size)
@@ -93,6 +96,7 @@ class VideoGenTest1 {
 	def void testExample4() {
 		val file = "example4.videogen"
 				vg = new VideoGen(file)
+		vg.clean()
 		vg.generate()
 		println(vg.nbVariantes())
 		assertEquals(vg.nbVariantes(), vg.generateAllVars().size)
@@ -107,6 +111,7 @@ class VideoGenTest1 {
 	def void testExample5() {
 		val file = "example5.videogen"
 				vg = new VideoGen(file)
+		vg.clean()
 		vg.generate()
 		println(vg.nbVariantes())
 		assertEquals(vg.nbVariantes(), vg.generateAllVars().size)
@@ -122,6 +127,7 @@ class VideoGenTest1 {
 	def void testExample6() {
 		val file = "example6.videogen"
 				vg = new VideoGen(file)
+		vg.clean()
 		vg.generate()
 		println(vg.nbVariantes())
 		assertEquals(vg.nbVariantes(), vg.generateAllVars().size)
@@ -136,6 +142,7 @@ class VideoGenTest1 {
 	def void testExample7() {
 		val file = "example7.videogen"
 				vg = new VideoGen(file)
+		vg.clean()
 		vg.generate()
 		println(vg.nbVariantes())
 		assertEquals(vg.nbVariantes(), vg.generateAllVars().size)
@@ -150,6 +157,7 @@ class VideoGenTest1 {
 	def void testExample8() {
 		val file = "example8.videogen"
 				vg = new VideoGen(file)
+		vg.clean()
 		vg.generate()
 		println(vg.nbVariantes())
 		assertEquals(vg.nbVariantes(), vg.generateAllVars().size)
@@ -164,6 +172,7 @@ class VideoGenTest1 {
 	def void testExample9() {
 		val file = "example9.videogen"
 		vg = new VideoGen(file)
+		vg.clean()
 		vg.generate()
 		println(vg.nbVariantes())
 		assertEquals(vg.nbVariantes(), vg.generateAllVars().size)

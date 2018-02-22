@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -47,6 +46,8 @@ public class VideoGen {
   private List<List<VideoDescription>> videoGenListed = new ArrayList<List<VideoDescription>>();
   
   private List<List<VideoDescription>> allVars = new ArrayList<List<VideoDescription>>();
+  
+  private List<String> listId = new ArrayList<String>();
   
   private String tag = "";
   
@@ -97,9 +98,196 @@ public class VideoGen {
     return this.allVideos;
   }
   
+  public void clean() {
+    int index = 0;
+    this.videoGenUpdated = this.videoGen;
+    EList<Media> _medias = this.videoGenUpdated.getMedias();
+    for (final Media media : _medias) {
+      {
+        final VideoSeq video = ((VideoSeq) media);
+        if ((video instanceof MandatoryVideoSeq)) {
+          this.cleanMandatory(((MandatoryVideoSeq)video).getDescription(), index);
+          index++;
+        }
+        if ((video instanceof OptionalVideoSeq)) {
+          this.cleanOptional(((OptionalVideoSeq)video).getDescription(), index);
+          index++;
+        }
+        if ((video instanceof AlternativeVideoSeq)) {
+          int total = 0;
+          int _size = ((AlternativeVideoSeq)video).getVideodescs().size();
+          boolean _equals = (_size == 0);
+          if (_equals) {
+            this.videoGen.getMedias().remove(video);
+          }
+          this.cleanId(((AlternativeVideoSeq)video), index);
+          index++;
+          EList<VideoDescription> _videodescs = ((AlternativeVideoSeq)video).getVideodescs();
+          for (final VideoDescription v : _videodescs) {
+            {
+              int _tal = total;
+              int _cleanAlternative = this.cleanAlternative(v, index, total, ((AlternativeVideoSeq)video).getVideodescs().size());
+              total = (_tal + _cleanAlternative);
+              index++;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  public void cleanAndGenerateFilter(final VideoDescription desc) {
+  }
+  
+  public void cleanId(final AlternativeVideoSeq desc, final int index) {
+    String _videoid = desc.getVideoid();
+    boolean _tripleEquals = (_videoid == "");
+    if (_tripleEquals) {
+      desc.setVideoid((((("alternative" + "_") + this.tag) + "_") + Integer.valueOf(index)));
+    }
+    while (this.idExists(desc.getVideoid())) {
+      String _videoid_1 = desc.getVideoid();
+      String _plus = (_videoid_1 + "_");
+      String _plus_1 = (_plus + Integer.valueOf(index));
+      desc.setVideoid(_plus_1);
+    }
+  }
+  
+  public String cleanMandatory(final VideoDescription desc, final int index) {
+    String _videoid = desc.getVideoid();
+    boolean _tripleEquals = (_videoid == "");
+    if (_tripleEquals) {
+      desc.setVideoid((((("video_mandatory" + "_") + this.tag) + "_") + Integer.valueOf(index)));
+    }
+    while (this.idExists(desc.getVideoid())) {
+      String _videoid_1 = desc.getVideoid();
+      String _plus = (_videoid_1 + "_");
+      String _plus_1 = (_plus + Integer.valueOf(index));
+      desc.setVideoid(_plus_1);
+    }
+    int _duration = desc.getDuration();
+    boolean _tripleEquals_1 = (((Integer) Integer.valueOf(_duration)) == null);
+    if (_tripleEquals_1) {
+      int _videoDuration = this.videoDuration(desc.getLocation());
+      int _plus = (_videoDuration + 0);
+      final Integer dur = ((Integer) Integer.valueOf(_plus));
+      desc.setDuration((dur).intValue());
+    } else {
+      int _duration_1 = desc.getDuration();
+      boolean _lessThan = (_duration_1 < 0);
+      if (_lessThan) {
+        int _videoDuration_1 = this.videoDuration(desc.getLocation());
+        int _plus_1 = (_videoDuration_1 + 0);
+        final Integer dur_1 = ((Integer) Integer.valueOf(_plus_1));
+        desc.setDuration((dur_1).intValue());
+      }
+    }
+    desc.setProbability(100);
+    String _description = desc.getDescription();
+    boolean _tripleEquals_2 = (_description == "");
+    if (_tripleEquals_2) {
+      desc.setDescription(((("video_mandatory_" + Integer.valueOf(index)) + "_") + this.tag));
+    }
+    return "";
+  }
+  
+  public String cleanOptional(final VideoDescription desc, final int index) {
+    String _videoid = desc.getVideoid();
+    boolean _tripleEquals = (_videoid == "");
+    if (_tripleEquals) {
+      desc.setVideoid((((("video_optional" + "_") + this.tag) + "_") + Integer.valueOf(index)));
+    }
+    while (this.idExists(desc.getVideoid())) {
+      String _videoid_1 = desc.getVideoid();
+      String _plus = (_videoid_1 + "_");
+      String _plus_1 = (_plus + Integer.valueOf(index));
+      desc.setVideoid(_plus_1);
+    }
+    int _duration = desc.getDuration();
+    boolean _tripleEquals_1 = (((Integer) Integer.valueOf(_duration)) == null);
+    if (_tripleEquals_1) {
+      int _videoDuration = this.videoDuration(desc.getLocation());
+      int _plus = (_videoDuration + 0);
+      final Integer dur = ((Integer) Integer.valueOf(_plus));
+      desc.setDuration((dur).intValue());
+    } else {
+      int _duration_1 = desc.getDuration();
+      boolean _lessThan = (_duration_1 < 0);
+      if (_lessThan) {
+        int _videoDuration_1 = this.videoDuration(desc.getLocation());
+        int _plus_1 = (_videoDuration_1 + 0);
+        final Integer dur_1 = ((Integer) Integer.valueOf(_plus_1));
+        desc.setDuration((dur_1).intValue());
+      }
+    }
+    if (((desc.getProbability() >= 100) || (desc.getProbability() <= 0))) {
+      desc.setProbability(50);
+    }
+    String _description = desc.getDescription();
+    boolean _tripleEquals_2 = (_description == "");
+    if (_tripleEquals_2) {
+      desc.setDescription(((("video_optional_" + Integer.valueOf(index)) + "_") + this.tag));
+    }
+    return "";
+  }
+  
+  public int cleanAlternative(final VideoDescription desc, final int index, final int tot, final int size) {
+    String _videoid = desc.getVideoid();
+    boolean _tripleEquals = (_videoid == "");
+    if (_tripleEquals) {
+      desc.setVideoid((((("video_alternative" + "_") + this.tag) + "_") + Integer.valueOf(index)));
+    }
+    while (this.idExists(desc.getVideoid())) {
+      String _videoid_1 = desc.getVideoid();
+      String _plus = (_videoid_1 + "_");
+      String _plus_1 = (_plus + Integer.valueOf(index));
+      desc.setVideoid(_plus_1);
+    }
+    int prob = 0;
+    int _duration = desc.getDuration();
+    boolean _tripleEquals_1 = (((Integer) Integer.valueOf(_duration)) == null);
+    if (_tripleEquals_1) {
+      int _videoDuration = this.videoDuration(desc.getLocation());
+      int _plus = (_videoDuration + 0);
+      final Integer dur = ((Integer) Integer.valueOf(_plus));
+      desc.setDuration((dur).intValue());
+    } else {
+      int _duration_1 = desc.getDuration();
+      boolean _lessThan = (_duration_1 < 0);
+      if (_lessThan) {
+        int _videoDuration_1 = this.videoDuration(desc.getLocation());
+        int _plus_1 = (_videoDuration_1 + 0);
+        final Integer dur_1 = ((Integer) Integer.valueOf(_plus_1));
+        desc.setDuration((dur_1).intValue());
+      }
+    }
+    if (((desc.getProbability() >= 100) || (desc.getProbability() <= 0))) {
+      desc.setProbability(((1 / size) * 100));
+    }
+    int _probability = desc.getProbability();
+    int _plus_2 = (_probability + tot);
+    boolean _greaterThan = (_plus_2 > 100);
+    if (_greaterThan) {
+      desc.setProbability((100 - tot));
+      int _probability_1 = desc.getProbability();
+      boolean _lessThan_1 = (_probability_1 < 0);
+      if (_lessThan_1) {
+        desc.setProbability(0);
+      }
+    }
+    String _description = desc.getDescription();
+    boolean _tripleEquals_2 = (_description == "");
+    if (_tripleEquals_2) {
+      desc.setDescription(((("video_alternative_" + Integer.valueOf(index)) + "_") + this.tag));
+    }
+    return desc.getProbability();
+  }
+  
   public String generate() {
     final ArrayList<String> playlist = CollectionLiterals.<String>newArrayList();
-    final Consumer<Media> _function = (Media media) -> {
+    int index = 0;
+    EList<Media> _medias = this.videoGen.getMedias();
+    for (final Media media : _medias) {
       if ((media instanceof VideoSeq)) {
         final VideoSeq video = ((VideoSeq) media);
         if ((video instanceof MandatoryVideoSeq)) {
@@ -107,16 +295,13 @@ public class VideoGen {
           int _videoDuration = this.videoDuration(desc.getLocation());
           int _plus = (_videoDuration + 0);
           final Integer dur = ((Integer) Integer.valueOf(_plus));
+          String newLoc = desc.getLocation();
           desc.setDuration((dur).intValue());
-          String _location = desc.getLocation();
-          String _plus_1 = ("file \'" + _location);
-          String _plus_2 = (_plus_1 + "\'");
-          String _plus_3 = (_plus_2 + " duration ");
-          String _plus_4 = (_plus_3 + dur);
-          playlist.add(_plus_4);
+          playlist.add((((("file \'" + newLoc) + "\'") + " duration ") + dur));
           List<VideoDescription> lempty = new ArrayList<VideoDescription>();
           lempty.add(desc);
           this.videoGenListed.add(lempty);
+          index++;
         }
         if ((video instanceof OptionalVideoSeq)) {
           final VideoDescription desc_1 = ((OptionalVideoSeq)video).getDescription();
@@ -126,19 +311,20 @@ public class VideoGen {
           boolean _equals = (_randomize == 1);
           if (_equals) {
             int _videoDuration_1 = this.videoDuration(desc_1.getLocation());
-            int _plus_5 = (_videoDuration_1 + 0);
-            final Integer dur_1 = ((Integer) Integer.valueOf(_plus_5));
+            int _plus_1 = (_videoDuration_1 + 0);
+            final Integer dur_1 = ((Integer) Integer.valueOf(_plus_1));
             desc_1.setDuration((dur_1).intValue());
-            String _location_1 = desc_1.getLocation();
-            String _plus_6 = ("file \'" + _location_1);
-            String _plus_7 = (_plus_6 + "\'");
-            String _plus_8 = (_plus_7 + " duration ");
-            String _plus_9 = (_plus_8 + dur_1);
-            playlist.add(_plus_9);
+            String _location = desc_1.getLocation();
+            String _plus_2 = ("file \'" + _location);
+            String _plus_3 = (_plus_2 + "\'");
+            String _plus_4 = (_plus_3 + " duration ");
+            String _plus_5 = (_plus_4 + dur_1);
+            playlist.add(_plus_5);
           }
           List<VideoDescription> lempty_1 = new ArrayList<VideoDescription>();
           lempty_1.add(desc_1);
           this.videoGenListed.add(lempty_1);
+          index++;
         }
         if ((video instanceof AlternativeVideoSeq)) {
           List<VideoDescription> lempty_2 = new ArrayList<VideoDescription>();
@@ -147,51 +333,58 @@ public class VideoGen {
           rd_1.setChoices(alts.getVideodescs().size());
           final int selected = rd_1.randomize();
           int _size = alts.getVideodescs().size();
-          String _plus_10 = ("CHOICES : " + Integer.valueOf(_size));
-          String _plus_11 = (_plus_10 + " SELECTED : ");
-          String _plus_12 = (_plus_11 + Integer.valueOf(selected));
-          InputOutput.<String>println(_plus_12);
+          String _plus_6 = ("CHOICES : " + Integer.valueOf(_size));
+          String _plus_7 = (_plus_6 + " SELECTED : ");
+          String _plus_8 = (_plus_7 + Integer.valueOf(selected));
+          InputOutput.<String>println(_plus_8);
           final VideoDescription videodesc = alts.getVideodescs().get(selected);
           int _videoDuration_2 = this.videoDuration(videodesc.getLocation());
-          int _plus_13 = (_videoDuration_2 + 0);
-          final Integer dur_2 = ((Integer) Integer.valueOf(_plus_13));
+          int _plus_9 = (_videoDuration_2 + 0);
+          final Integer dur_2 = ((Integer) Integer.valueOf(_plus_9));
           videodesc.setDuration((dur_2).intValue());
-          String _location_2 = videodesc.getLocation();
-          String _plus_14 = ("file \'" + _location_2);
-          String _plus_15 = (_plus_14 + "\'");
-          String _plus_16 = (_plus_15 + " duration ");
-          String _plus_17 = (_plus_16 + dur_2);
-          playlist.add(_plus_17);
+          String _location_1 = videodesc.getLocation();
+          String _plus_10 = ("file \'" + _location_1);
+          String _plus_11 = (_plus_10 + "\'");
+          String _plus_12 = (_plus_11 + " duration ");
+          String _plus_13 = (_plus_12 + dur_2);
+          playlist.add(_plus_13);
           EList<VideoDescription> _videodescs = alts.getVideodescs();
           for (final VideoDescription va : _videodescs) {
             lempty_2.add(va);
           }
           this.videoGenListed.add(lempty_2);
+          index++;
         }
       }
-    };
-    this.videoGen.getMedias().forEach(_function);
+    }
     String playlistStr = "";
     for (final String pl : playlist) {
       String _playlistStr = playlistStr;
       playlistStr = (_playlistStr + (pl + "\n"));
     }
-    this.videoGenUpdated = this.videoGen;
     return playlistStr;
   }
   
   public String generateFromVideoDescriptions(final List<VideoDescription> l) {
     final ArrayList<String> playlist = CollectionLiterals.<String>newArrayList();
     for (final VideoDescription v : l) {
-      String _location = v.getLocation();
-      String _plus = ("file \'" + _location);
-      String _plus_1 = (_plus + "\'");
-      String _plus_2 = (_plus_1 + " duration ");
-      int _duration = v.getDuration();
-      String _plus_3 = (_plus_2 + Integer.valueOf(_duration));
-      String _plus_4 = (_plus_3 + " inpoint ");
-      String _plus_5 = (_plus_4 + "0");
-      playlist.add(_plus_5);
+      {
+        String newLoc = v.getLocation();
+        String _content = v.getText().getContent();
+        boolean _tripleNotEquals = (_content != "");
+        if (_tripleNotEquals) {
+          String _videoid = v.getVideoid();
+          String _plus = ((this.tag + "_") + _videoid);
+          String _plus_1 = (_plus + ".MTS");
+          newLoc = _plus_1;
+          this.generateVideoFilteredWithText(v, v.getLocation(), newLoc);
+        }
+        int _duration = v.getDuration();
+        String _plus_2 = ((((("file \'" + VideoGen.PATH_GEN_RELATIVE) + newLoc) + "\'") + " duration ") + Integer.valueOf(_duration));
+        String _plus_3 = (_plus_2 + " inpoint ");
+        String _plus_4 = (_plus_3 + "0");
+        playlist.add(_plus_4);
+      }
     }
     String playlistStr = "";
     for (final String pl : playlist) {
@@ -255,7 +448,6 @@ public class VideoGen {
         }
       }
     }
-    this.videoGenUpdated = this.videoGen;
   }
   
   public int getLongestVar() {
@@ -326,6 +518,49 @@ public class VideoGen {
     try {
       Process p = null;
       String ffmpegCmd = this.ffmpegConcatenateCommand((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target)).toString();
+      InputOutput.<String>println(ffmpegCmd);
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      boolean _waitFor = p.waitFor(20, TimeUnit.SECONDS);
+      boolean _not = (!_waitFor);
+      if (_not) {
+        p.destroyForcibly();
+      }
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  public void generateVideoFilteredWithText(final VideoDescription desc, final String source, final String target) {
+    try {
+      Process p = null;
+      String text = desc.getText().getContent();
+      int x = 50;
+      int y = 0;
+      String color = desc.getText().getColor();
+      int size = desc.getText().getSize();
+      String ffmpegCmd = null;
+      if ((size == 0)) {
+        size = 20;
+      }
+      String _position = desc.getText().getPosition();
+      if (_position != null) {
+        switch (_position) {
+          case "TOP":
+            ffmpegCmd = this.ffmpegDrawTextTOP((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
+            break;
+          case "BOTTOM":
+            ffmpegCmd = this.ffmpegDrawTextBOTTOM((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
+            break;
+          case "CENTER":
+            ffmpegCmd = this.ffmpegDrawTextCENTER((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
+            break;
+          default:
+            ffmpegCmd = this.ffmpegDrawTextCENTER((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
+            break;
+        }
+      } else {
+        ffmpegCmd = this.ffmpegDrawTextCENTER((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
+      }
       InputOutput.<String>println(ffmpegCmd);
       p = Runtime.getRuntime().exec(ffmpegCmd);
       boolean _waitFor = p.waitFor(20, TimeUnit.SECONDS);
@@ -644,6 +879,57 @@ public class VideoGen {
     return false;
   }
   
+  public CharSequence ffmpegDrawTextTOP(final String inputPath, final String outputPath, final String text, final String color, final int size) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("ffmpeg -i ");
+    _builder.append(inputPath);
+    _builder.append(" -vf \"drawtext=fontfile=\'C\\:\\\\Windows\\\\fonts\\\\Arial.ttf\':text=");
+    _builder.append(text);
+    _builder.append(":x=(w-text_w)/2:fontsize=");
+    _builder.append(size);
+    _builder.append(":fontcolor=");
+    _builder.append(color);
+    _builder.append("\" ");
+    _builder.append(outputPath);
+    _builder.append(" -y");
+    _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
+  public CharSequence ffmpegDrawTextCENTER(final String inputPath, final String outputPath, final String text, final String color, final int size) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("ffmpeg -i ");
+    _builder.append(inputPath);
+    _builder.append(" -vf \"drawtext=fontfile=\'C\\:\\\\Windows\\\\fonts\\\\Arial.ttf\':text=");
+    _builder.append(text);
+    _builder.append(":x=(w-text_w)/2:y=(h-text_h)/2:fontsize=");
+    _builder.append(size);
+    _builder.append(":fontcolor=");
+    _builder.append(color);
+    _builder.append("\" ");
+    _builder.append(outputPath);
+    _builder.append(" -y");
+    _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
+  public CharSequence ffmpegDrawTextBOTTOM(final String inputPath, final String outputPath, final String text, final String color, final int size) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("ffmpeg -i ");
+    _builder.append(inputPath);
+    _builder.append(" -vf \"drawtext=fontfile=\'C\\:\\\\Windows\\\\fonts\\\\Arial.ttf\':text=");
+    _builder.append(text);
+    _builder.append(":x=(w-text_w)/2:y=(h-text_h):fontsize=");
+    _builder.append(size);
+    _builder.append(":fontcolor=");
+    _builder.append(color);
+    _builder.append("\" ");
+    _builder.append(outputPath);
+    _builder.append(" -y");
+    _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
   public CharSequence ffmpegConcatenateCommand(final String mpegPlaylistFile, final String outputPath) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("ffmpeg -y -f concat -safe 0 -i ");
@@ -689,7 +975,7 @@ public class VideoGen {
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("ffmpeg -i ");
       _builder.append(videoLocation);
-      _builder.append(" -y -ss 0 -pix_fmt rgb24 -r 10 -t ");
+      _builder.append(" -y -ss 0 -pix_fmt rgb8 -r 10 -t ");
       _builder.append(time);
       _builder.append(" -s ");
       _builder.append(w);
@@ -703,7 +989,7 @@ public class VideoGen {
       StringConcatenation _builder_1 = new StringConcatenation();
       _builder_1.append("ffmpeg -i ");
       _builder_1.append(videoLocation);
-      _builder_1.append(" -y -ss 0 -pix_fmt rgb24 -r 10 -s ");
+      _builder_1.append(" -y -ss 0 -pix_fmt rgb8 -r 10 -s ");
       _builder_1.append(w);
       _builder_1.append("x");
       _builder_1.append(l);
@@ -712,5 +998,15 @@ public class VideoGen {
       _builder_1.newLineIfNotEmpty();
       return _builder_1.toString();
     }
+  }
+  
+  public boolean idExists(final String id) {
+    for (final String s : this.listId) {
+      boolean _equals = Objects.equal(s, id);
+      if (_equals) {
+        return true;
+      }
+    }
+    return false;
   }
 }
