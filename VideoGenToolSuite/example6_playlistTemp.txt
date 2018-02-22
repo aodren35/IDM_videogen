@@ -1,0 +1,1 @@
+file 'ressources/yg_om.mp4' duration 19 inpoint 0

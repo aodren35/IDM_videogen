@@ -51,10 +51,6 @@ public class Randomiser {
 	public int randomize() {
 		if(prob == -1) {
 			if (choices == 0) {
-				// no choices 0%
-				prob = 0;
-				return 0;
-			} else if (choices == 1) {
 				// 50%
 				prob = 0.5;
 				if (this.setDisplayedByProb()) {
@@ -62,6 +58,14 @@ public class Randomiser {
 				} else  {
 					return 0;
 				}
+			} else if (choices == -1) {
+				// no choices 0%
+				prob = 0;
+				return 0;
+			}else if (choices == 1) {
+				// 100%
+				prob = 1;
+				return 0;
 			} else {
 				// proportionnel au nombre de choix
 				prob = 1/choices;

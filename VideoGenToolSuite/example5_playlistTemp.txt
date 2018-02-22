@@ -1,0 +1,3 @@
+file 'ressources/ba_om.mp4' duration 20 inpoint 0
+file 'ressources/ba_om.mp4' duration 20 inpoint 0
+file 'ressources/ba_om.mp4' duration 20 inpoint 0

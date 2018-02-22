@@ -1,0 +1,13 @@
+@author "Aodren Letellier"
+VideoGen {
+	optional videoseq v1 "ressources/ba_om.mp4"
+			{
+				duration 10
+				probability 50
+				description benjamin_andré_contre_l'om
+				text {
+					content benjamin andré contre l'om
+					position TOP
+					}
+			}
+}

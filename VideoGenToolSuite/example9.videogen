@@ -1,0 +1,4 @@
+@author "Aodren Letellier"
+VideoGen {
+	mandatory videoseq v1 "ressources/ba_om.mp4"
+}

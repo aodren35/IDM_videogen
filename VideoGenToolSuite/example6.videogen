@@ -1,0 +1,6 @@
+@author "Aodren Letellier"
+VideoGen {
+	alternatives v1 {
+			videoseq "ressources/yg_om.mp4"
+		}
+}

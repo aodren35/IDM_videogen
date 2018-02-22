@@ -1,0 +1,6 @@
+file 'ressources/1.mp4' duration 9 inpoint 0
+file 'ressources/2.mp4' duration 14 inpoint 0
+file 'ressources/3.mp4' duration 91 inpoint 0
+file 'ressources/4.mp4' duration 15 inpoint 0
+file 'ressources/1.mp4' duration 9 inpoint 0
+file 'ressources/2.mp4' duration 14 inpoint 0
