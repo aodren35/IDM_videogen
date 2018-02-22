@@ -1,12 +1,13 @@
 @author "Aodren Letellier"
 VideoGen {
 	mandatory videoseq v1 "ressources/ba_om.mp4" {
+		filter b&w
 		text {
 					content "benjamin andré contre l'om"
 					position "TOP"
 					color "red"
 					size "10"
-					}
+		}
 	}
 	
 }

@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -25,13 +24,18 @@ import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.xtext.example.mydsl.videoGen.AlternativeVideoSeq;
+import org.xtext.example.mydsl.videoGen.BlackWhiteFilter;
+import org.xtext.example.mydsl.videoGen.Filter;
+import org.xtext.example.mydsl.videoGen.FlipFilter;
 import org.xtext.example.mydsl.videoGen.MandatoryVideoSeq;
 import org.xtext.example.mydsl.videoGen.Media;
+import org.xtext.example.mydsl.videoGen.NegateFilter;
 import org.xtext.example.mydsl.videoGen.OptionalVideoSeq;
 import org.xtext.example.mydsl.videoGen.VideoDescription;
 import org.xtext.example.mydsl.videoGen.VideoGeneratorModel;
 import org.xtext.example.mydsl.videoGen.VideoSeq;
 import utils.Randomiser;
+import utils.StreamGobbler;
 
 @SuppressWarnings("all")
 public class VideoGen {
@@ -118,7 +122,7 @@ public class VideoGen {
           int _size = ((AlternativeVideoSeq)video).getVideodescs().size();
           boolean _equals = (_size == 0);
           if (_equals) {
-            this.videoGen.getMedias().remove(video);
+            this.videoGenUpdated.getMedias().remove(video);
           }
           this.cleanId(((AlternativeVideoSeq)video), index);
           index++;
@@ -375,9 +379,45 @@ public class VideoGen {
         if (_tripleNotEquals) {
           String _videoid = v.getVideoid();
           String _plus = ((this.tag + "_") + _videoid);
-          String _plus_1 = (_plus + ".MTS");
+          String _plus_1 = (_plus + ".mp4");
           newLoc = _plus_1;
           this.generateVideoFilteredWithText(v, v.getLocation(), newLoc);
+        }
+        InputOutput.<Filter>println(v.getFilter());
+        Filter _filter = v.getFilter();
+        if ((_filter instanceof FlipFilter)) {
+          InputOutput.<String>println("FLIPFILTER");
+          Filter _filter_1 = v.getFilter();
+          String _orientation = ((FlipFilter) _filter_1).getOrientation();
+          if (_orientation != null) {
+            switch (_orientation) {
+              case "h":
+                this.applyFilterFilpH(newLoc);
+                break;
+              case "horizontal":
+                this.applyFilterFilpH(newLoc);
+                break;
+              case "v":
+                this.applyFilterFilpV(newLoc);
+                break;
+              case "vertical":
+                this.applyFilterFilpV(newLoc);
+                break;
+              default:
+                break;
+            }
+          } else {
+          }
+        }
+        Filter _filter_2 = v.getFilter();
+        if ((_filter_2 instanceof NegateFilter)) {
+          InputOutput.<String>println("NEGATEFILTER");
+          this.applyFilterNegate(newLoc);
+        }
+        Filter _filter_3 = v.getFilter();
+        if ((_filter_3 instanceof BlackWhiteFilter)) {
+          InputOutput.<String>println("BNFILTER");
+          this.applyFilterBN(newLoc);
         }
         int _duration = v.getDuration();
         String _plus_2 = ((((("file \'" + VideoGen.PATH_GEN_RELATIVE) + newLoc) + "\'") + " duration ") + Integer.valueOf(_duration));
@@ -518,13 +558,115 @@ public class VideoGen {
     try {
       Process p = null;
       String ffmpegCmd = this.ffmpegConcatenateCommand((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target)).toString();
+      FileOutputStream fos = new FileOutputStream("logger.txt");
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      InputOutput.<String>println(("filter text " + ffmpegCmd));
+      InputStream _errorStream = p.getErrorStream();
+      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
+      InputStream _inputStream = p.getInputStream();
+      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
+      errorGobbler.start();
+      outputGobbler.start();
+      int exitVal = p.waitFor();
+      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
+      fos.flush();
+      fos.close();
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  public void applyFilterFilpH(final String string) {
+    try {
+      Process p = null;
+      String ffmpegCmd = this.ffmpegFlipH((VideoGen.PATH_TOOL + string), ((VideoGen.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
       InputOutput.<String>println(ffmpegCmd);
       p = Runtime.getRuntime().exec(ffmpegCmd);
-      boolean _waitFor = p.waitFor(20, TimeUnit.SECONDS);
-      boolean _not = (!_waitFor);
-      if (_not) {
-        p.destroyForcibly();
-      }
+      FileOutputStream fos = new FileOutputStream("logger.txt");
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      InputOutput.<String>println(("filter text " + ffmpegCmd));
+      InputStream _errorStream = p.getErrorStream();
+      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
+      InputStream _inputStream = p.getInputStream();
+      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
+      errorGobbler.start();
+      outputGobbler.start();
+      int exitVal = p.waitFor();
+      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
+      fos.flush();
+      fos.close();
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  public void applyFilterFilpV(final String string) {
+    try {
+      Process p = null;
+      String ffmpegCmd = this.ffmpegFlipV(((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + string), ((VideoGen.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
+      InputOutput.<String>println(ffmpegCmd);
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      FileOutputStream fos = new FileOutputStream("logger.txt");
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      InputOutput.<String>println(("filter text " + ffmpegCmd));
+      InputStream _errorStream = p.getErrorStream();
+      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
+      InputStream _inputStream = p.getInputStream();
+      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
+      errorGobbler.start();
+      outputGobbler.start();
+      int exitVal = p.waitFor();
+      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
+      fos.flush();
+      fos.close();
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  public void applyFilterNegate(final String string) {
+    try {
+      Process p = null;
+      String ffmpegCmd = this.ffmpegNegate(((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + string), ((VideoGen.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
+      InputOutput.<String>println(ffmpegCmd);
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      FileOutputStream fos = new FileOutputStream("logger.txt");
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      InputOutput.<String>println(("filter text " + ffmpegCmd));
+      InputStream _errorStream = p.getErrorStream();
+      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
+      InputStream _inputStream = p.getInputStream();
+      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
+      errorGobbler.start();
+      outputGobbler.start();
+      int exitVal = p.waitFor();
+      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
+      fos.flush();
+      fos.close();
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  public void applyFilterBN(final String string) {
+    try {
+      Process p = null;
+      String ffmpegCmd = this.ffmpegBN(((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + string), ((VideoGen.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
+      InputOutput.<String>println(ffmpegCmd);
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      FileOutputStream fos = new FileOutputStream("logger.txt");
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      InputOutput.<String>println(("filter text " + ffmpegCmd));
+      InputStream _errorStream = p.getErrorStream();
+      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
+      InputStream _inputStream = p.getInputStream();
+      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
+      errorGobbler.start();
+      outputGobbler.start();
+      int exitVal = p.waitFor();
+      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
+      fos.flush();
+      fos.close();
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -561,13 +703,19 @@ public class VideoGen {
       } else {
         ffmpegCmd = this.ffmpegDrawTextCENTER((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
       }
-      InputOutput.<String>println(ffmpegCmd);
+      FileOutputStream fos = new FileOutputStream("logger.txt");
       p = Runtime.getRuntime().exec(ffmpegCmd);
-      boolean _waitFor = p.waitFor(20, TimeUnit.SECONDS);
-      boolean _not = (!_waitFor);
-      if (_not) {
-        p.destroyForcibly();
-      }
+      InputOutput.<String>println(("filter text " + ffmpegCmd));
+      InputStream _errorStream = p.getErrorStream();
+      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
+      InputStream _inputStream = p.getInputStream();
+      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
+      errorGobbler.start();
+      outputGobbler.start();
+      int exitVal = p.waitFor();
+      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
+      fos.flush();
+      fos.close();
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -591,11 +739,19 @@ public class VideoGen {
       String ffmpegCmd = this.ffmpegVideoToGif(((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + source), ((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + target), time, width, length).toString();
       InputOutput.<String>println(ffmpegCmd);
       p = Runtime.getRuntime().exec(ffmpegCmd);
-      boolean _waitFor = p.waitFor(20, TimeUnit.SECONDS);
-      boolean _not = (!_waitFor);
-      if (_not) {
-        p.destroyForcibly();
-      }
+      FileOutputStream fos = new FileOutputStream("logger.txt");
+      p = Runtime.getRuntime().exec(ffmpegCmd);
+      InputOutput.<String>println(("filter text " + ffmpegCmd));
+      InputStream _errorStream = p.getErrorStream();
+      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
+      InputStream _inputStream = p.getInputStream();
+      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
+      errorGobbler.start();
+      outputGobbler.start();
+      int exitVal = p.waitFor();
+      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
+      fos.flush();
+      fos.close();
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -680,7 +836,7 @@ public class VideoGen {
         int index = 1;
         final String source = ((this.tag + "_") + "playlistTemp.txt");
         String target = ((this.tag + "_") + "gen");
-        String format = ".MTS";
+        String format = ".mp4";
         String gif = ".gif";
         for (final List<VideoDescription> v : this.allVars) {
           {
@@ -877,6 +1033,50 @@ public class VideoGen {
       }
     }
     return false;
+  }
+  
+  public CharSequence ffmpegFlipH(final String inputPath, final String outputPath) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("ffmpeg -i ");
+    _builder.append(inputPath);
+    _builder.append(" -vf \"hflip\" ");
+    _builder.append(outputPath);
+    _builder.append(" -y");
+    _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
+  public CharSequence ffmpegFlipV(final String inputPath, final String outputPath) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("ffmpeg -i ");
+    _builder.append(inputPath);
+    _builder.append(" -vf \"vflip\" ");
+    _builder.append(outputPath);
+    _builder.append(" -y");
+    _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
+  public CharSequence ffmpegNegate(final String inputPath, final String outputPath) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("ffmpeg -i ");
+    _builder.append(inputPath);
+    _builder.append(" -vf \"negate\" ");
+    _builder.append(outputPath);
+    _builder.append(" -y");
+    _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
+  public CharSequence ffmpegBN(final String inputPath, final String outputPath) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("ffmpeg -i ");
+    _builder.append(inputPath);
+    _builder.append(" -vf \"hue=s=0\" ");
+    _builder.append(outputPath);
+    _builder.append(" -y");
+    _builder.newLineIfNotEmpty();
+    return _builder;
   }
   
   public CharSequence ffmpegDrawTextTOP(final String inputPath, final String outputPath, final String text, final String color, final int size) {

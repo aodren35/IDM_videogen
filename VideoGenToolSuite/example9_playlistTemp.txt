@@ -1,1 +1,1 @@
-file 'ressources/gen/example9_v1.MTS' duration 20 inpoint 0
+file 'ressources/gen/example9_v1.mp4' duration 20 inpoint 0

@@ -17,7 +17,7 @@ import org.junit.BeforeClass
 import org.junit.Before
 import org.junit.After
 
-class VideoGenTest1 {
+class VideoGenTest {
 
 	var VideoGen vg;
 	private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/"

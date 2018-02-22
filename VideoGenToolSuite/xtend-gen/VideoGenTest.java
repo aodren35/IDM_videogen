@@ -9,7 +9,7 @@ import org.junit.Test;
 import utils.Utils;
 
 @SuppressWarnings("all")
-public class VideoGenTest1 {
+public class VideoGenTest {
   private VideoGen vg;
   
   private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/";
@@ -51,7 +51,7 @@ public class VideoGenTest1 {
       this.vg.generateHtml();
       int _nbVariantes = this.vg.nbVariantes();
       int _plus = (_nbVariantes + 1);
-      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest1.PATH_TOOL + VideoGenTest1.PATH_STATS_RELATIVE) + "example1_vars_size.csv")));
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example1_vars_size.csv")));
       Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
@@ -88,7 +88,7 @@ public class VideoGenTest1 {
       this.vg.generateHtml();
       int _nbVariantes = this.vg.nbVariantes();
       int _plus = (_nbVariantes + 1);
-      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest1.PATH_TOOL + VideoGenTest1.PATH_STATS_RELATIVE) + "example3_vars_size.csv")));
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example3_vars_size.csv")));
       Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
@@ -110,7 +110,7 @@ public class VideoGenTest1 {
       this.vg.generateHtml();
       int _nbVariantes = this.vg.nbVariantes();
       int _plus = (_nbVariantes + 1);
-      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest1.PATH_TOOL + VideoGenTest1.PATH_STATS_RELATIVE) + "example4_vars_size.csv")));
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example4_vars_size.csv")));
       Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
@@ -132,7 +132,7 @@ public class VideoGenTest1 {
       this.vg.generateHtml();
       int _nbVariantes = this.vg.nbVariantes();
       int _plus = (_nbVariantes + 1);
-      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest1.PATH_TOOL + VideoGenTest1.PATH_STATS_RELATIVE) + "example5_vars_size.csv")));
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example5_vars_size.csv")));
       Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
@@ -154,7 +154,7 @@ public class VideoGenTest1 {
       this.vg.generateHtml();
       int _nbVariantes = this.vg.nbVariantes();
       int _plus = (_nbVariantes + 1);
-      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest1.PATH_TOOL + VideoGenTest1.PATH_STATS_RELATIVE) + "example6_vars_size.csv")));
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example6_vars_size.csv")));
       Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
@@ -176,7 +176,7 @@ public class VideoGenTest1 {
       this.vg.generateHtml();
       int _nbVariantes = this.vg.nbVariantes();
       int _plus = (_nbVariantes + 1);
-      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest1.PATH_TOOL + VideoGenTest1.PATH_STATS_RELATIVE) + "example7_vars_size.csv")));
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example7_vars_size.csv")));
       Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
@@ -198,7 +198,7 @@ public class VideoGenTest1 {
       this.vg.generateHtml();
       int _nbVariantes = this.vg.nbVariantes();
       int _plus = (_nbVariantes + 1);
-      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest1.PATH_TOOL + VideoGenTest1.PATH_STATS_RELATIVE) + "example8_vars_size.csv")));
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example8_vars_size.csv")));
       Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
@@ -220,7 +220,7 @@ public class VideoGenTest1 {
       this.vg.generateHtml();
       int _nbVariantes = this.vg.nbVariantes();
       int _plus = (_nbVariantes + 1);
-      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest1.PATH_TOOL + VideoGenTest1.PATH_STATS_RELATIVE) + "example9_vars_size.csv")));
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example9_vars_size.csv")));
       Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
