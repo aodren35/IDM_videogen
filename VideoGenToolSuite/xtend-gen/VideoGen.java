@@ -1,12 +1,9 @@
 import com.google.common.base.Objects;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -31,11 +28,12 @@ import org.xtext.example.mydsl.videoGen.MandatoryVideoSeq;
 import org.xtext.example.mydsl.videoGen.Media;
 import org.xtext.example.mydsl.videoGen.NegateFilter;
 import org.xtext.example.mydsl.videoGen.OptionalVideoSeq;
+import org.xtext.example.mydsl.videoGen.Text;
 import org.xtext.example.mydsl.videoGen.VideoDescription;
 import org.xtext.example.mydsl.videoGen.VideoGeneratorModel;
 import org.xtext.example.mydsl.videoGen.VideoSeq;
+import utils.FFMPEGCall;
 import utils.Randomiser;
-import utils.StreamGobbler;
 
 @SuppressWarnings("all")
 public class VideoGen {
@@ -57,6 +55,8 @@ public class VideoGen {
   
   private String uri = "";
   
+  private FFMPEGCall ffmpeg;
+  
   private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/";
   
   private final static String PATH_GEN_RELATIVE = "ressources/gen/";
@@ -71,6 +71,8 @@ public class VideoGen {
   public VideoGen(final String uri) {
     this.videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI(uri));
     this.tag = uri.split("\\.")[0];
+    FFMPEGCall _fFMPEGCall = new FFMPEGCall(this.tag);
+    this.ffmpeg = _fFMPEGCall;
     this.uri = uri;
     this.numberOfThumbnail = 0;
   }
@@ -172,7 +174,7 @@ public class VideoGen {
     int _duration = desc.getDuration();
     boolean _tripleEquals_1 = (((Integer) Integer.valueOf(_duration)) == null);
     if (_tripleEquals_1) {
-      int _videoDuration = this.videoDuration(desc.getLocation());
+      int _videoDuration = this.ffmpeg.videoDuration(desc.getLocation());
       int _plus = (_videoDuration + 0);
       final Integer dur = ((Integer) Integer.valueOf(_plus));
       desc.setDuration((dur).intValue());
@@ -180,7 +182,7 @@ public class VideoGen {
       int _duration_1 = desc.getDuration();
       boolean _lessThan = (_duration_1 < 0);
       if (_lessThan) {
-        int _videoDuration_1 = this.videoDuration(desc.getLocation());
+        int _videoDuration_1 = this.ffmpeg.videoDuration(desc.getLocation());
         int _plus_1 = (_videoDuration_1 + 0);
         final Integer dur_1 = ((Integer) Integer.valueOf(_plus_1));
         desc.setDuration((dur_1).intValue());
@@ -210,7 +212,7 @@ public class VideoGen {
     int _duration = desc.getDuration();
     boolean _tripleEquals_1 = (((Integer) Integer.valueOf(_duration)) == null);
     if (_tripleEquals_1) {
-      int _videoDuration = this.videoDuration(desc.getLocation());
+      int _videoDuration = this.ffmpeg.videoDuration(desc.getLocation());
       int _plus = (_videoDuration + 0);
       final Integer dur = ((Integer) Integer.valueOf(_plus));
       desc.setDuration((dur).intValue());
@@ -218,7 +220,7 @@ public class VideoGen {
       int _duration_1 = desc.getDuration();
       boolean _lessThan = (_duration_1 < 0);
       if (_lessThan) {
-        int _videoDuration_1 = this.videoDuration(desc.getLocation());
+        int _videoDuration_1 = this.ffmpeg.videoDuration(desc.getLocation());
         int _plus_1 = (_videoDuration_1 + 0);
         final Integer dur_1 = ((Integer) Integer.valueOf(_plus_1));
         desc.setDuration((dur_1).intValue());
@@ -251,7 +253,7 @@ public class VideoGen {
     int _duration = desc.getDuration();
     boolean _tripleEquals_1 = (((Integer) Integer.valueOf(_duration)) == null);
     if (_tripleEquals_1) {
-      int _videoDuration = this.videoDuration(desc.getLocation());
+      int _videoDuration = this.ffmpeg.videoDuration(desc.getLocation());
       int _plus = (_videoDuration + 0);
       final Integer dur = ((Integer) Integer.valueOf(_plus));
       desc.setDuration((dur).intValue());
@@ -259,7 +261,7 @@ public class VideoGen {
       int _duration_1 = desc.getDuration();
       boolean _lessThan = (_duration_1 < 0);
       if (_lessThan) {
-        int _videoDuration_1 = this.videoDuration(desc.getLocation());
+        int _videoDuration_1 = this.ffmpeg.videoDuration(desc.getLocation());
         int _plus_1 = (_videoDuration_1 + 0);
         final Integer dur_1 = ((Integer) Integer.valueOf(_plus_1));
         desc.setDuration((dur_1).intValue());
@@ -296,7 +298,7 @@ public class VideoGen {
         final VideoSeq video = ((VideoSeq) media);
         if ((video instanceof MandatoryVideoSeq)) {
           final VideoDescription desc = ((MandatoryVideoSeq)video).getDescription();
-          int _videoDuration = this.videoDuration(desc.getLocation());
+          int _videoDuration = this.ffmpeg.videoDuration(desc.getLocation());
           int _plus = (_videoDuration + 0);
           final Integer dur = ((Integer) Integer.valueOf(_plus));
           String newLoc = desc.getLocation();
@@ -314,7 +316,7 @@ public class VideoGen {
           int _randomize = rd.randomize();
           boolean _equals = (_randomize == 1);
           if (_equals) {
-            int _videoDuration_1 = this.videoDuration(desc_1.getLocation());
+            int _videoDuration_1 = this.ffmpeg.videoDuration(desc_1.getLocation());
             int _plus_1 = (_videoDuration_1 + 0);
             final Integer dur_1 = ((Integer) Integer.valueOf(_plus_1));
             desc_1.setDuration((dur_1).intValue());
@@ -342,7 +344,7 @@ public class VideoGen {
           String _plus_8 = (_plus_7 + Integer.valueOf(selected));
           InputOutput.<String>println(_plus_8);
           final VideoDescription videodesc = alts.getVideodescs().get(selected);
-          int _videoDuration_2 = this.videoDuration(videodesc.getLocation());
+          int _videoDuration_2 = this.ffmpeg.videoDuration(videodesc.getLocation());
           int _plus_9 = (_videoDuration_2 + 0);
           final Integer dur_2 = ((Integer) Integer.valueOf(_plus_9));
           videodesc.setDuration((dur_2).intValue());
@@ -374,16 +376,24 @@ public class VideoGen {
     for (final VideoDescription v : l) {
       {
         String newLoc = v.getLocation();
-        String _content = v.getText().getContent();
-        boolean _tripleNotEquals = (_content != "");
+        InputOutput.<String>println(newLoc);
+        Text _text = v.getText();
+        boolean _tripleNotEquals = (_text != null);
         if (_tripleNotEquals) {
-          String _videoid = v.getVideoid();
-          String _plus = ((this.tag + "_") + _videoid);
-          String _plus_1 = (_plus + ".mp4");
-          newLoc = _plus_1;
-          this.generateVideoFilteredWithText(v, v.getLocation(), newLoc);
+          String _content = v.getText().getContent();
+          boolean _tripleNotEquals_1 = (_content != "");
+          if (_tripleNotEquals_1) {
+            String _videoid = v.getVideoid();
+            String _plus = ((this.tag + "_") + _videoid);
+            String _plus_1 = (_plus + ".mp4");
+            newLoc = _plus_1;
+            this.ffmpeg.generateVideoFilteredWithText(v, v.getLocation(), newLoc);
+            String _videoid_1 = v.getVideoid();
+            String _plus_2 = (((VideoGen.PATH_GEN_RELATIVE + this.tag) + "_") + _videoid_1);
+            String _plus_3 = (_plus_2 + ".mp4");
+            newLoc = _plus_3;
+          }
         }
-        InputOutput.<Filter>println(v.getFilter());
         Filter _filter = v.getFilter();
         if ((_filter instanceof FlipFilter)) {
           InputOutput.<String>println("FLIPFILTER");
@@ -392,16 +402,16 @@ public class VideoGen {
           if (_orientation != null) {
             switch (_orientation) {
               case "h":
-                this.applyFilterFilpH(newLoc);
+                this.ffmpeg.applyFilterFilpH(newLoc);
                 break;
               case "horizontal":
-                this.applyFilterFilpH(newLoc);
+                this.ffmpeg.applyFilterFilpH(newLoc);
                 break;
               case "v":
-                this.applyFilterFilpV(newLoc);
+                this.ffmpeg.applyFilterFilpV(newLoc);
                 break;
               case "vertical":
-                this.applyFilterFilpV(newLoc);
+                this.ffmpeg.applyFilterFilpV(newLoc);
                 break;
               default:
                 break;
@@ -412,18 +422,18 @@ public class VideoGen {
         Filter _filter_2 = v.getFilter();
         if ((_filter_2 instanceof NegateFilter)) {
           InputOutput.<String>println("NEGATEFILTER");
-          this.applyFilterNegate(newLoc);
+          this.ffmpeg.applyFilterNegate(newLoc);
         }
         Filter _filter_3 = v.getFilter();
         if ((_filter_3 instanceof BlackWhiteFilter)) {
           InputOutput.<String>println("BNFILTER");
-          this.applyFilterBN(newLoc);
+          this.ffmpeg.applyFilterBN(newLoc);
         }
         int _duration = v.getDuration();
-        String _plus_2 = ((((("file \'" + VideoGen.PATH_GEN_RELATIVE) + newLoc) + "\'") + " duration ") + Integer.valueOf(_duration));
-        String _plus_3 = (_plus_2 + " inpoint ");
-        String _plus_4 = (_plus_3 + "0");
-        playlist.add(_plus_4);
+        String _plus_4 = (((("file \'" + newLoc) + "\'") + " duration ") + Integer.valueOf(_duration));
+        String _plus_5 = (_plus_4 + " inpoint ");
+        String _plus_6 = (_plus_5 + "0");
+        playlist.add(_plus_6);
       }
     }
     String playlistStr = "";
@@ -432,17 +442,6 @@ public class VideoGen {
       playlistStr = (_playlistStr + (pl + "\n"));
     }
     return playlistStr;
-  }
-  
-  public void generateThumbnail(final int id, final String loc) {
-    try {
-      String cmd = (((((((("ffmpeg -i " + loc) + " -ss 00:00:01.000 -vframes 1 ") + VideoGen.PATH_GEN_RELATIVE) + "vignettes/") + this.tag) + "_") + Integer.valueOf(id)) + ".jpg -y");
-      Process p = Runtime.getRuntime().exec(cmd);
-      p.waitFor();
-      this.numberOfThumbnail++;
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
   }
   
   public void generateThumbnails() {
@@ -454,20 +453,22 @@ public class VideoGen {
         if ((video instanceof MandatoryVideoSeq)) {
           final VideoDescription desc = ((MandatoryVideoSeq)video).getDescription();
           VideoDescription _description = ((MandatoryVideoSeq)video).getDescription();
-          int _videoDuration = this.videoDuration(desc.getLocation());
+          int _videoDuration = this.ffmpeg.videoDuration(desc.getLocation());
           int _plus = (_videoDuration + 0);
           _description.setDuration(_plus);
-          this.generateThumbnail(index, desc.getLocation());
+          this.ffmpeg.generateThumbnail(index, desc.getLocation());
+          this.numberOfThumbnail++;
           index++;
           this.allVideos.add(desc);
         }
         if ((video instanceof OptionalVideoSeq)) {
           final VideoDescription desc_1 = ((OptionalVideoSeq)video).getDescription();
           VideoDescription _description_1 = ((OptionalVideoSeq)video).getDescription();
-          int _videoDuration_1 = this.videoDuration(desc_1.getLocation());
+          int _videoDuration_1 = this.ffmpeg.videoDuration(desc_1.getLocation());
           int _plus_1 = (_videoDuration_1 + 0);
           _description_1.setDuration(_plus_1);
-          this.generateThumbnail(index, desc_1.getLocation());
+          this.ffmpeg.generateThumbnail(index, desc_1.getLocation());
+          this.numberOfThumbnail++;
           index++;
           this.allVideos.add(desc_1);
         }
@@ -477,10 +478,11 @@ public class VideoGen {
           for (final VideoDescription videodesc : _videodescs) {
             {
               final VideoDescription desc_2 = videodesc;
-              int _videoDuration_2 = this.videoDuration(desc_2.getLocation());
+              int _videoDuration_2 = this.ffmpeg.videoDuration(desc_2.getLocation());
               int _plus_2 = (_videoDuration_2 + 0);
               videodesc.setDuration(_plus_2);
-              this.generateThumbnail(index, desc_2.getLocation());
+              this.ffmpeg.generateThumbnail(index, desc_2.getLocation());
+              this.numberOfThumbnail++;
               index++;
               this.allVideos.add(desc_2);
             }
@@ -499,13 +501,13 @@ public class VideoGen {
         if ((video instanceof MandatoryVideoSeq)) {
           final VideoDescription desc = ((MandatoryVideoSeq)video).getDescription();
           int _duration = duration;
-          int _videoDuration = this.videoDuration(desc.getLocation());
+          int _videoDuration = this.ffmpeg.videoDuration(desc.getLocation());
           duration = (_duration + _videoDuration);
         }
         if ((video instanceof OptionalVideoSeq)) {
           final VideoDescription desc_1 = ((OptionalVideoSeq)video).getDescription();
           int _duration_1 = duration;
-          int _videoDuration_1 = this.videoDuration(desc_1.getLocation());
+          int _videoDuration_1 = this.ffmpeg.videoDuration(desc_1.getLocation());
           duration = (_duration_1 + _videoDuration_1);
         }
         if ((video instanceof AlternativeVideoSeq)) {
@@ -516,7 +518,7 @@ public class VideoGen {
           EList<VideoDescription> _videodescs = alts.getVideodescs();
           for (final VideoDescription videodesc : _videodescs) {
             {
-              final int durationTemp = this.videoDuration(videodesc.getLocation());
+              final int durationTemp = this.ffmpeg.videoDuration(videodesc.getLocation());
               if ((durationTemp > longestDuration)) {
                 longestDuration = durationTemp;
               }
@@ -549,209 +551,6 @@ public class VideoGen {
         buffer.flush();
         buffer.close();
       }
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
-  public void generateVideo(final String source, final String target) {
-    try {
-      Process p = null;
-      String ffmpegCmd = this.ffmpegConcatenateCommand((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target)).toString();
-      FileOutputStream fos = new FileOutputStream("logger.txt");
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      InputOutput.<String>println(("filter text " + ffmpegCmd));
-      InputStream _errorStream = p.getErrorStream();
-      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
-      InputStream _inputStream = p.getInputStream();
-      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
-      errorGobbler.start();
-      outputGobbler.start();
-      int exitVal = p.waitFor();
-      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
-      fos.flush();
-      fos.close();
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
-  public void applyFilterFilpH(final String string) {
-    try {
-      Process p = null;
-      String ffmpegCmd = this.ffmpegFlipH((VideoGen.PATH_TOOL + string), ((VideoGen.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
-      InputOutput.<String>println(ffmpegCmd);
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      FileOutputStream fos = new FileOutputStream("logger.txt");
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      InputOutput.<String>println(("filter text " + ffmpegCmd));
-      InputStream _errorStream = p.getErrorStream();
-      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
-      InputStream _inputStream = p.getInputStream();
-      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
-      errorGobbler.start();
-      outputGobbler.start();
-      int exitVal = p.waitFor();
-      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
-      fos.flush();
-      fos.close();
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
-  public void applyFilterFilpV(final String string) {
-    try {
-      Process p = null;
-      String ffmpegCmd = this.ffmpegFlipV(((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + string), ((VideoGen.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
-      InputOutput.<String>println(ffmpegCmd);
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      FileOutputStream fos = new FileOutputStream("logger.txt");
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      InputOutput.<String>println(("filter text " + ffmpegCmd));
-      InputStream _errorStream = p.getErrorStream();
-      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
-      InputStream _inputStream = p.getInputStream();
-      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
-      errorGobbler.start();
-      outputGobbler.start();
-      int exitVal = p.waitFor();
-      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
-      fos.flush();
-      fos.close();
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
-  public void applyFilterNegate(final String string) {
-    try {
-      Process p = null;
-      String ffmpegCmd = this.ffmpegNegate(((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + string), ((VideoGen.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
-      InputOutput.<String>println(ffmpegCmd);
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      FileOutputStream fos = new FileOutputStream("logger.txt");
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      InputOutput.<String>println(("filter text " + ffmpegCmd));
-      InputStream _errorStream = p.getErrorStream();
-      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
-      InputStream _inputStream = p.getInputStream();
-      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
-      errorGobbler.start();
-      outputGobbler.start();
-      int exitVal = p.waitFor();
-      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
-      fos.flush();
-      fos.close();
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
-  public void applyFilterBN(final String string) {
-    try {
-      Process p = null;
-      String ffmpegCmd = this.ffmpegBN(((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + string), ((VideoGen.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
-      InputOutput.<String>println(ffmpegCmd);
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      FileOutputStream fos = new FileOutputStream("logger.txt");
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      InputOutput.<String>println(("filter text " + ffmpegCmd));
-      InputStream _errorStream = p.getErrorStream();
-      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
-      InputStream _inputStream = p.getInputStream();
-      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
-      errorGobbler.start();
-      outputGobbler.start();
-      int exitVal = p.waitFor();
-      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
-      fos.flush();
-      fos.close();
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
-  public void generateVideoFilteredWithText(final VideoDescription desc, final String source, final String target) {
-    try {
-      Process p = null;
-      String text = desc.getText().getContent();
-      int x = 50;
-      int y = 0;
-      String color = desc.getText().getColor();
-      int size = desc.getText().getSize();
-      String ffmpegCmd = null;
-      if ((size == 0)) {
-        size = 20;
-      }
-      String _position = desc.getText().getPosition();
-      if (_position != null) {
-        switch (_position) {
-          case "TOP":
-            ffmpegCmd = this.ffmpegDrawTextTOP((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
-            break;
-          case "BOTTOM":
-            ffmpegCmd = this.ffmpegDrawTextBOTTOM((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
-            break;
-          case "CENTER":
-            ffmpegCmd = this.ffmpegDrawTextCENTER((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
-            break;
-          default:
-            ffmpegCmd = this.ffmpegDrawTextCENTER((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
-            break;
-        }
-      } else {
-        ffmpegCmd = this.ffmpegDrawTextCENTER((VideoGen.PATH_TOOL + source), (VideoGen.PATH_GEN_RELATIVE + target), text, color, size).toString();
-      }
-      FileOutputStream fos = new FileOutputStream("logger.txt");
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      InputOutput.<String>println(("filter text " + ffmpegCmd));
-      InputStream _errorStream = p.getErrorStream();
-      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
-      InputStream _inputStream = p.getInputStream();
-      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
-      errorGobbler.start();
-      outputGobbler.start();
-      int exitVal = p.waitFor();
-      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
-      fos.flush();
-      fos.close();
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
-  public void generateGif(final String source, final String target, final int t, final int w, final int l) {
-    try {
-      Process p = null;
-      int time = 0;
-      int width = 320;
-      int length = 240;
-      if ((t != (-1))) {
-        time = t;
-      }
-      if ((w != (-1))) {
-        width = w;
-      }
-      if ((l != (-1))) {
-        length = l;
-      }
-      String ffmpegCmd = this.ffmpegVideoToGif(((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + source), ((VideoGen.PATH_TOOL + VideoGen.PATH_GEN_RELATIVE) + target), time, width, length).toString();
-      InputOutput.<String>println(ffmpegCmd);
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      FileOutputStream fos = new FileOutputStream("logger.txt");
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      InputOutput.<String>println(("filter text " + ffmpegCmd));
-      InputStream _errorStream = p.getErrorStream();
-      StreamGobbler errorGobbler = new StreamGobbler(_errorStream, "ERROR");
-      InputStream _inputStream = p.getInputStream();
-      StreamGobbler outputGobbler = new StreamGobbler(_inputStream, "OUTPUT", fos);
-      errorGobbler.start();
-      outputGobbler.start();
-      int exitVal = p.waitFor();
-      System.out.println(("ExitValue: " + Integer.valueOf(exitVal)));
-      fos.flush();
-      fos.close();
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -846,8 +645,8 @@ public class VideoGen {
             fl.append(",");
             final String playlistTemp = this.generateFromVideoDescriptions(v);
             this.writeInFile(source, playlistTemp);
-            this.generateVideo(source, ((target + Integer.valueOf(index)) + format));
-            this.generateGif(((target + Integer.valueOf(index)) + format), ((target + Integer.valueOf(index)) + gif), (-1), (-1), (-1));
+            this.ffmpeg.generateVideo(source, ((target + Integer.valueOf(index)) + format));
+            this.ffmpeg.generateGif(((target + Integer.valueOf(index)) + format), ((target + Integer.valueOf(index)) + gif), (-1), (-1), (-1));
             for (final VideoDescription desc_1 : this.allVideos) {
               {
                 boolean _hasVideo = this.hasVideo(v, desc_1);
@@ -1002,27 +801,6 @@ public class VideoGen {
     return result;
   }
   
-  public int videoDuration(final String locationVideo) {
-    try {
-      Process p = null;
-      String ffmpegCmd = this.ffmpegComputeDuration(locationVideo).toString();
-      p = Runtime.getRuntime().exec(ffmpegCmd);
-      p.waitFor();
-      InputStream _inputStream = p.getInputStream();
-      InputStreamReader _inputStreamReader = new InputStreamReader(_inputStream);
-      BufferedReader reader = new BufferedReader(_inputStreamReader);
-      String line = "";
-      String lines = "";
-      while ((!Objects.equal((line = reader.readLine()), null))) {
-        lines = (lines + line);
-      }
-      int _round = Math.round(Float.parseFloat(lines));
-      return (_round - 1);
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
   public boolean hasVideo(final List<VideoDescription> l, final VideoDescription v) {
     for (final VideoDescription vTemp : l) {
       String _videoid = vTemp.getVideoid();
@@ -1033,171 +811,6 @@ public class VideoGen {
       }
     }
     return false;
-  }
-  
-  public CharSequence ffmpegFlipH(final String inputPath, final String outputPath) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -i ");
-    _builder.append(inputPath);
-    _builder.append(" -vf \"hflip\" ");
-    _builder.append(outputPath);
-    _builder.append(" -y");
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegFlipV(final String inputPath, final String outputPath) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -i ");
-    _builder.append(inputPath);
-    _builder.append(" -vf \"vflip\" ");
-    _builder.append(outputPath);
-    _builder.append(" -y");
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegNegate(final String inputPath, final String outputPath) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -i ");
-    _builder.append(inputPath);
-    _builder.append(" -vf \"negate\" ");
-    _builder.append(outputPath);
-    _builder.append(" -y");
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegBN(final String inputPath, final String outputPath) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -i ");
-    _builder.append(inputPath);
-    _builder.append(" -vf \"hue=s=0\" ");
-    _builder.append(outputPath);
-    _builder.append(" -y");
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegDrawTextTOP(final String inputPath, final String outputPath, final String text, final String color, final int size) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -i ");
-    _builder.append(inputPath);
-    _builder.append(" -vf \"drawtext=fontfile=\'C\\:\\\\Windows\\\\fonts\\\\Arial.ttf\':text=");
-    _builder.append(text);
-    _builder.append(":x=(w-text_w)/2:fontsize=");
-    _builder.append(size);
-    _builder.append(":fontcolor=");
-    _builder.append(color);
-    _builder.append("\" ");
-    _builder.append(outputPath);
-    _builder.append(" -y");
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegDrawTextCENTER(final String inputPath, final String outputPath, final String text, final String color, final int size) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -i ");
-    _builder.append(inputPath);
-    _builder.append(" -vf \"drawtext=fontfile=\'C\\:\\\\Windows\\\\fonts\\\\Arial.ttf\':text=");
-    _builder.append(text);
-    _builder.append(":x=(w-text_w)/2:y=(h-text_h)/2:fontsize=");
-    _builder.append(size);
-    _builder.append(":fontcolor=");
-    _builder.append(color);
-    _builder.append("\" ");
-    _builder.append(outputPath);
-    _builder.append(" -y");
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegDrawTextBOTTOM(final String inputPath, final String outputPath, final String text, final String color, final int size) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -i ");
-    _builder.append(inputPath);
-    _builder.append(" -vf \"drawtext=fontfile=\'C\\:\\\\Windows\\\\fonts\\\\Arial.ttf\':text=");
-    _builder.append(text);
-    _builder.append(":x=(w-text_w)/2:y=(h-text_h):fontsize=");
-    _builder.append(size);
-    _builder.append(":fontcolor=");
-    _builder.append(color);
-    _builder.append("\" ");
-    _builder.append(outputPath);
-    _builder.append(" -y");
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegConcatenateCommand(final String mpegPlaylistFile, final String outputPath) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -y -f concat -safe 0 -i ");
-    _builder.append(mpegPlaylistFile);
-    _builder.append(" -c copy -r 24 ");
-    _builder.append(outputPath);
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegComputeDuration(final String locationVideo) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ");
-    _builder.append(locationVideo);
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegVideoToPalette(final String videoLocation) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -v warning -ss  0 -i ");
-    _builder.append(videoLocation);
-    _builder.append(" -vf \"fps=15,scale=-1:-1:flags=lanczos,palettegen\" -y ");
-    _builder.append(VideoGen.PATH_TEMP_PALETTE);
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public CharSequence ffmpegPaletteToGif(final String videoLocation, final String outputPath) {
-    StringConcatenation _builder = new StringConcatenation();
-    _builder.append("ffmpeg -v warning -ss 0 -i ");
-    _builder.append(videoLocation);
-    _builder.append(" -i ");
-    _builder.append(VideoGen.PATH_TEMP_PALETTE);
-    _builder.append(" -lavfi \"fps=15,scale=-1:-1:flags=lanczos, [x]; [x][1:v] paletteuse\" -y  ");
-    _builder.append(outputPath);
-    _builder.newLineIfNotEmpty();
-    return _builder;
-  }
-  
-  public String ffmpegVideoToGif(final String videoLocation, final String outputPath, final int time, final int w, final int l) {
-    if ((time != 0)) {
-      StringConcatenation _builder = new StringConcatenation();
-      _builder.append("ffmpeg -i ");
-      _builder.append(videoLocation);
-      _builder.append(" -y -ss 0 -pix_fmt rgb8 -r 10 -t ");
-      _builder.append(time);
-      _builder.append(" -s ");
-      _builder.append(w);
-      _builder.append("x");
-      _builder.append(l);
-      _builder.append("  ");
-      _builder.append(outputPath);
-      _builder.newLineIfNotEmpty();
-      return _builder.toString();
-    } else {
-      StringConcatenation _builder_1 = new StringConcatenation();
-      _builder_1.append("ffmpeg -i ");
-      _builder_1.append(videoLocation);
-      _builder_1.append(" -y -ss 0 -pix_fmt rgb8 -r 10 -s ");
-      _builder_1.append(w);
-      _builder_1.append("x");
-      _builder_1.append(l);
-      _builder_1.append("  ");
-      _builder_1.append(outputPath);
-      _builder_1.newLineIfNotEmpty();
-      return _builder_1.toString();
-    }
   }
   
   public boolean idExists(final String id) {

@@ -37,6 +37,8 @@ class VideoGen {
 	private String tag = ""
 	private String uri = ""
 	
+	private FFMPEGCall ffmpeg
+	
 	private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/"
 	private final static String PATH_GEN_RELATIVE = "ressources/gen/"
 	private final static String PATH_RESSOURCES = "ressources/"
@@ -58,6 +60,7 @@ class VideoGen {
   	new(String uri) {
   		videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI(uri))
   		tag = uri.split("\\.").get(0)
+  		ffmpeg = new FFMPEGCall(tag)
   		this.uri = uri
   		numberOfThumbnail = 0
     }
@@ -139,11 +142,11 @@ class VideoGen {
 		}
 		
 		if (desc.duration as Integer === null) {
-			val dur =  (videoDuration(desc.location) + 0) as Integer
+			val dur =  (ffmpeg.videoDuration(desc.location) + 0) as Integer
 			desc.duration = dur
 		} else {
 			if (desc.duration < 0) {
-				val dur =  (videoDuration(desc.location) + 0) as Integer
+				val dur =  (ffmpeg.videoDuration(desc.location) + 0) as Integer
 				desc.duration = dur
 			}
 		}
@@ -163,11 +166,11 @@ class VideoGen {
 			desc.videoid = desc.videoid + "_"+index
 		}
 		if (desc.duration as Integer === null) {
-			val dur =  (videoDuration(desc.location) + 0) as Integer
+			val dur =  (ffmpeg.videoDuration(desc.location) + 0) as Integer
 			desc.duration = dur
 		} else {
 			if (desc.duration < 0) {
-				val dur =  (videoDuration(desc.location) + 0) as Integer
+				val dur =  (ffmpeg.videoDuration(desc.location) + 0) as Integer
 				desc.duration = dur
 			}
 		}
@@ -189,11 +192,11 @@ class VideoGen {
 		}
 		var int prob
 		if (desc.duration as Integer === null) {
-			val dur =  (videoDuration(desc.location) + 0) as Integer
+			val dur =  (ffmpeg.videoDuration(desc.location) + 0) as Integer
 			desc.duration = dur
 		} else {
 			if (desc.duration < 0) {
-				val dur =  (videoDuration(desc.location) + 0) as Integer
+				val dur =  (ffmpeg.videoDuration(desc.location) + 0) as Integer
 				desc.duration = dur
 			}
 		}
@@ -213,8 +216,6 @@ class VideoGen {
 	
 	// TODO : ajouter duration si absentes (voir faire une fonction globale qui fait tout)
 	def String generate() {
-		// and then visit the model
-		// eg access video sequences: 
 		val playlist = newArrayList()
 		var index = 0
 		for (Media media: videoGen.medias){
@@ -224,7 +225,7 @@ class VideoGen {
 				
 				if (video instanceof MandatoryVideoSeq) {
 					val desc =  video.description
-					val dur =  (videoDuration(desc.location) + 0) as Integer
+					val dur =  (ffmpeg.videoDuration(desc.location) + 0) as Integer
 					var newLoc = desc.location
 					desc.duration = dur
 					playlist.add("file '" + newLoc + "'"+ " duration "+ dur)
@@ -240,7 +241,7 @@ class VideoGen {
 					val rd = new Randomiser();
 					rd.setChoices(0);
 					if (rd.randomize() == 1) {				
-						val dur = (videoDuration(desc.location) + 0) as Integer
+						val dur = (ffmpeg.videoDuration(desc.location) + 0) as Integer
 						desc.duration = dur
 						playlist.add("file '" + desc.location + "'"+ " duration "+ dur)
 						
@@ -261,7 +262,7 @@ class VideoGen {
 					val selected = rd.randomize()
 					println("CHOICES : "+alts.videodescs.size + " SELECTED : "+ selected)
 					val videodesc = alts.videodescs.get(selected)
-					val dur = (videoDuration(videodesc.location) + 0) as Integer
+					val dur = (ffmpeg.videoDuration(videodesc.location) + 0) as Integer
 					videodesc.duration = dur
 					playlist.add("file '" + videodesc.location + "'"+ " duration "+ dur)
 					
@@ -289,31 +290,34 @@ class VideoGen {
 		val playlist = newArrayList()
 		for (VideoDescription v: l) {
 			var newLoc = v.location
-			if (v.text.content !== "") {
-				newLoc = tag + "_" + v.videoid + ".mp4"
-				generateVideoFilteredWithText(v, v.location, newLoc)
+			println(newLoc)
+			if (v.text !== null){
+				if (v.text.content !== "") {
+					newLoc = tag + "_" + v.videoid + ".mp4"
+					ffmpeg.generateVideoFilteredWithText(v, v.location, newLoc)
+					newLoc = PATH_GEN_RELATIVE + tag + "_" + v.videoid + ".mp4"
+				}
 			}
-			println(v.filter)
 			if (v.filter instanceof FlipFilter) {
 				println("FLIPFILTER")
 				switch ((v.filter as FlipFilter).orientation) {
-					case 'h' : { applyFilterFilpH(newLoc)}
-					case 'horizontal' : {applyFilterFilpH(newLoc)}
-					case 'v' : {applyFilterFilpV(newLoc)}
-					case 'vertical' : {applyFilterFilpV(newLoc)}
+					case 'h' : { ffmpeg.applyFilterFilpH(newLoc)}
+					case 'horizontal' : {ffmpeg.applyFilterFilpH(newLoc)}
+					case 'v' : {ffmpeg.applyFilterFilpV(newLoc)}
+					case 'vertical' : {ffmpeg.applyFilterFilpV(newLoc)}
 					default : {}
 				}
 				
 			}
 			if (v.filter instanceof NegateFilter) {
 				println("NEGATEFILTER")
-				applyFilterNegate(newLoc)
+				ffmpeg.applyFilterNegate(newLoc)
 			}
 			if (v.filter instanceof BlackWhiteFilter) {
 				println("BNFILTER")
-				applyFilterBN(newLoc)
+				ffmpeg.applyFilterBN(newLoc)
 			}
-			playlist.add("file '" + PATH_GEN_RELATIVE + newLoc + "'"+ " duration "+ v.duration + " inpoint " + "0")
+			playlist.add("file '"  + newLoc + "'"+ " duration "+ v.duration + " inpoint " + "0")
 		}
 		var playlistStr = ""
 		for (String pl : playlist)
@@ -323,13 +327,6 @@ class VideoGen {
 	
 	
 
-	def void generateThumbnail(int id, String loc) {
-		var cmd = "ffmpeg -i " + loc + " -ss 00:00:01.000 -vframes 1 " + PATH_GEN_RELATIVE + "vignettes/" + tag + "_"+id + ".jpg -y"
-		var p = Runtime.getRuntime().exec(cmd);
-		p.waitFor();
-		numberOfThumbnail ++ 
-
-	}
 	
 	def void generateThumbnails() {
 		// and then visit the model
@@ -342,16 +339,18 @@ class VideoGen {
 				
 				if (video instanceof MandatoryVideoSeq ) {
 					val desc =  video.description
-					video.description.duration = videoDuration(desc.location) + 0 
-					generateThumbnail(index, desc.location)
+					video.description.duration = ffmpeg.videoDuration(desc.location) + 0 
+					ffmpeg.generateThumbnail(index, desc.location)
+					numberOfThumbnail ++
 					index ++
 					allVideos.add(desc)		
 						
 				}
 				if (video instanceof OptionalVideoSeq) {
 					val desc =  video.description
-					video.description.duration = videoDuration(desc.location) + 0 
-					generateThumbnail(index, desc.location)
+					video.description.duration = ffmpeg.videoDuration(desc.location) + 0 
+					ffmpeg.generateThumbnail(index, desc.location)
+					numberOfThumbnail ++
 					index ++
 					allVideos.add(desc)		
 				}
@@ -359,8 +358,9 @@ class VideoGen {
 					val alts = (video as AlternativeVideoSeq)
 					for (VideoDescription videodesc: alts.videodescs) {
 						val desc = videodesc
-						videodesc.duration = videoDuration(desc.location) + 0 
-						generateThumbnail(index, desc.location)
+						videodesc.duration = ffmpeg.videoDuration(desc.location) + 0 
+						ffmpeg.generateThumbnail(index, desc.location)
+						numberOfThumbnail ++
 						index ++
 						allVideos.add(desc)		
 					}
@@ -382,13 +382,13 @@ class VideoGen {
 				
 				if (video instanceof MandatoryVideoSeq) {
 					val desc =  video.description
-					duration += videoDuration(desc.location)
+					duration += ffmpeg.videoDuration(desc.location)
 							
 						
 				}
 				if (video instanceof OptionalVideoSeq) {
 					val desc =  video.description
-					duration += videoDuration(desc.location)
+					duration += ffmpeg.videoDuration(desc.location)
 						
 				}
 				if (video instanceof AlternativeVideoSeq) {
@@ -398,7 +398,7 @@ class VideoGen {
 					var index = 0;
 					var longestDuration = 0;
 					for (VideoDescription videodesc: alts.videodescs) {
-						val durationTemp = videoDuration(videodesc.location)
+						val durationTemp = ffmpeg.videoDuration(videodesc.location)
 						if (durationTemp > longestDuration) {
 							longestDuration = durationTemp
 						}
@@ -425,227 +425,6 @@ class VideoGen {
 		}
 	}
 	
-	def void generateVideo(String source, String target) {
-		var Process p 
-		var ffmpegCmd = ffmpegConcatenateCommand(PATH_TOOL + source, PATH_GEN_RELATIVE + target).toString 
-				var FileOutputStream fos = new FileOutputStream('logger.txt');
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 	
-	 	println("filter text " + ffmpegCmd)
-	 	
-	 	// any error message?
-        var StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");            
-		// any output?
-        var StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT", fos);
-                
-        // kick them off
-        errorGobbler.start();
-        outputGobbler.start();
-                                
-        // any error???
-        var int exitVal = p.waitFor
-        
-         System.out.println("ExitValue: " + exitVal);
-            fos.flush();
-            fos.close();  
-//		if(!p.waitFor(60, TimeUnit.SECONDS)) {
-//    		//timeout - kill the process. 
-//    		p.destroyForcibly()
-//		}
-		
-	}
-	
-	def applyFilterFilpH(String string) {
-		var Process p 
-		var ffmpegCmd = ffmpegFlipH(PATH_TOOL + string, PATH_GEN_RELATIVE + "filtered_"+string).toString 
-		println(ffmpegCmd)
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 			var FileOutputStream fos = new FileOutputStream('logger.txt');
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 	
-	 	println("filter text " + ffmpegCmd)
-	 	
-	 	// any error message?
-        var StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");            
-		// any output?
-        var StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT", fos);
-                
-        // kick them off
-        errorGobbler.start();
-        outputGobbler.start();
-                                
-        // any error???
-        var int exitVal = p.waitFor
-        
-         System.out.println("ExitValue: " + exitVal);
-            fos.flush();
-            fos.close();  
-	}
-	
-	def applyFilterFilpV(String string) {
-		var Process p 
-		var ffmpegCmd = ffmpegFlipV(PATH_TOOL +PATH_GEN_RELATIVE+ string, PATH_GEN_RELATIVE + "filtered_"+string).toString 
-		println(ffmpegCmd)
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 		var FileOutputStream fos = new FileOutputStream('logger.txt');
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 	
-	 	println("filter text " + ffmpegCmd)
-	 	
-	 	// any error message?
-        var StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");            
-		// any output?
-        var StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT", fos);
-                
-        // kick them off
-        errorGobbler.start();
-        outputGobbler.start();
-                                
-        // any error???
-        var int exitVal = p.waitFor
-        
-         System.out.println("ExitValue: " + exitVal);
-            fos.flush();
-            fos.close();  
-	}
-	
-	def applyFilterNegate(String string) {
-		var Process p 
-		var ffmpegCmd = ffmpegNegate(PATH_TOOL +PATH_GEN_RELATIVE+ string, PATH_GEN_RELATIVE + "filtered_"+string).toString 
-		println(ffmpegCmd)
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 		var FileOutputStream fos = new FileOutputStream('logger.txt');
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 	
-	 	println("filter text " + ffmpegCmd)
-	 	
-	 	// any error message?
-        var StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");            
-		// any output?
-        var StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT", fos);
-                
-        // kick them off
-        errorGobbler.start();
-        outputGobbler.start();
-                                
-        // any error???
-        var int exitVal = p.waitFor
-        
-         System.out.println("ExitValue: " + exitVal);
-            fos.flush();
-            fos.close();  
-	}
-	
-	def applyFilterBN(String string) {
-		var Process p 
-		var ffmpegCmd = ffmpegBN(PATH_TOOL +PATH_GEN_RELATIVE+ string, PATH_GEN_RELATIVE + "filtered_"+string).toString 
-		println(ffmpegCmd)
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-			var FileOutputStream fos = new FileOutputStream('logger.txt');
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 	
-	 	println("filter text " + ffmpegCmd)
-	 	
-	 	// any error message?
-        var StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");            
-		// any output?
-        var StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT", fos);
-                
-        // kick them off
-        errorGobbler.start();
-        outputGobbler.start();
-                                
-        // any error???
-        var int exitVal = p.waitFor
-        
-         System.out.println("ExitValue: " + exitVal);
-            fos.flush();
-            fos.close();  
-	}
-	
-	def void generateVideoFilteredWithText(VideoDescription desc, String source, String target) {
-		var Process p 
-		var text = desc.text.content
-		var x = 50
-		var y = 0
-		var color = desc.text.color
-		var size = desc.text.size
-		var String ffmpegCmd
-		if (size == 0) { 
-			size = 20
-		}
-		switch desc.text.position {
-  			case 'TOP' : {
-  				ffmpegCmd = ffmpegDrawTextTOP(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text,  color, size).toString 
-  			}
-  			case 'BOTTOM' : {
-  				ffmpegCmd = ffmpegDrawTextBOTTOM(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text, color, size).toString 
-  			}
-  			case 'CENTER': {
-  				ffmpegCmd = ffmpegDrawTextCENTER(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text, color, size).toString 
-  			}
-  			default : ffmpegCmd = ffmpegDrawTextCENTER(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text, color, size).toString 
-		}
-
-
-		
-		var FileOutputStream fos = new FileOutputStream('logger.txt');
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 	
-	 	println("filter text " + ffmpegCmd)
-	 	
-	 	// any error message?
-        var StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");            
-		// any output?
-        var StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT", fos);
-                
-        // kick them off
-        errorGobbler.start();
-        outputGobbler.start();
-                                
-        // any error???
-        var int exitVal = p.waitFor
-        
-         System.out.println("ExitValue: " + exitVal);
-            fos.flush();
-            fos.close();      
-		
-		    
-	}
-	
-	def void generateGif(String source, String target, int t, int w, int l) {
-		var Process p
-		var int time = 0
-		var int width = 320
-		var int length = 240
-		if (t != -1) time = t
-		if (w != -1) width = w
-		if (l != -1) length = l
-		var ffmpegCmd = ffmpegVideoToGif(PATH_TOOL+ PATH_GEN_RELATIVE + source, PATH_TOOL+PATH_GEN_RELATIVE + target, time, width, length).toString 
-		println(ffmpegCmd)
-		
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-		var FileOutputStream fos = new FileOutputStream('logger.txt');
-	 	p = Runtime.runtime.exec(ffmpegCmd)
-	 	
-	 	println("filter text " + ffmpegCmd)
-	 	
-	 	// any error message?
-        var StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");            
-		// any output?
-        var StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT", fos);
-                
-        // kick them off
-        errorGobbler.start();
-        outputGobbler.start();
-                                
-        // any error???
-        var int exitVal = p.waitFor
-        
-         System.out.println("ExitValue: " + exitVal);
-            fos.flush();
-            fos.close();  
-	}
 	
 	def List<List<VideoDescription>> generateAllVars() {
 		
@@ -732,9 +511,9 @@ class VideoGen {
 				
 				val playlistTemp = generateFromVideoDescriptions(v)
 				writeInFile(source, playlistTemp)
-				generateVideo(source, target+index+format)
+				ffmpeg.generateVideo(source, target+index+format)
 
-				generateGif(target+index+format, target+index+gif, -1, -1, -1)
+				ffmpeg.generateGif(target+index+format, target+index+gif, -1, -1, -1)
 	//			Files.delete(Paths.get(source))
 				
 				for(VideoDescription desc : allVideos) {
@@ -851,24 +630,7 @@ class VideoGen {
 		return result
 	}
 
-	def int videoDuration(String locationVideo) {
-			
-			var Process p
-			var ffmpegCmd = ffmpegComputeDuration(locationVideo).toString 
-			
-		
-			p = Runtime.getRuntime().exec(ffmpegCmd);
-			p.waitFor();
-			
-			var BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-			var String line = "";
-			var String lines = "";
-		    while ((line = reader.readLine()) != null) {
-		        lines = lines + line;
-		    }
-		    return Math.round(Float.parseFloat(lines))-1;
-	}
+	
 
 	def boolean hasVideo(List<VideoDescription> l, VideoDescription v){
 		for (VideoDescription vTemp: l) {
@@ -879,65 +641,7 @@ class VideoGen {
 		return false;
 	}
 	
-	def ffmpegFlipH(String inputPath, String outputPath) '''
-		ffmpeg -i «inputPath» -vf "hflip" «outputPath» -y
-	'''
 	
-	def ffmpegFlipV(String inputPath, String outputPath) '''
-		ffmpeg -i «inputPath» -vf "vflip" «outputPath» -y
-	'''
-	
-	def ffmpegNegate(String inputPath, String outputPath) '''
-		ffmpeg -i «inputPath» -vf "negate" «outputPath» -y
-	'''
-	
-	def ffmpegBN(String inputPath, String outputPath) '''
-		ffmpeg -i «inputPath» -vf "hue=s=0" «outputPath» -y
-	'''
-
-	def ffmpegDrawTextTOP(String inputPath, String outputPath, String text,   String color, int size) '''
-		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:fontsize=«size»:fontcolor=«color»" «outputPath» -y
-	'''
-	
-	def ffmpegDrawTextCENTER(String inputPath, String outputPath, String text,  String color, int size) '''
-		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=«size»:fontcolor=«color»" «outputPath» -y
-	'''
-	def ffmpegDrawTextBOTTOM(String inputPath, String outputPath, String text, String color, int size) '''
-		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:y=(h-text_h):fontsize=«size»:fontcolor=«color»" «outputPath» -y
-	'''
-
-	def ffmpegConcatenateCommand(String mpegPlaylistFile, String outputPath) '''
-			 ffmpeg -y -f concat -safe 0 -i «mpegPlaylistFile» -c copy -r 24 «outputPath»
-		'''
-		
-	def ffmpegComputeDuration(String locationVideo) '''
-		ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 «locationVideo»
-	'''
-	
-	def ffmpegVideoToPalette(String videoLocation) '''
-		 ffmpeg -v warning -ss  0 -i «videoLocation» -vf "fps=15,scale=-1:-1:flags=lanczos,palettegen" -y «PATH_TEMP_PALETTE»
-	'''
-	def ffmpegPaletteToGif(String videoLocation, String outputPath) 	/*'''
-		 ffmpeg -i «videoLocation» -ss 00:00:00.000 -pix_fmt rgb24 -r 10 -s 320x240   «outputPath»
-	'''*/
-	'''
-		 ffmpeg -v warning -ss 0 -i «videoLocation» -i «PATH_TEMP_PALETTE» -lavfi "fps=15,scale=-1:-1:flags=lanczos, [x]; [x][1:v] paletteuse" -y  «outputPath»
-	'''
-
-
-	def String ffmpegVideoToGif(String videoLocation, String outputPath, int time, int w, int l){
-		if (time != 0) { 
-			return 
-				''' 
-		 		ffmpeg -i «videoLocation» -y -ss 0 -pix_fmt rgb8 -r 10 -t «time» -s «w»x«l»  «outputPath»
-				'''
-		} else {
-			return 
-				''' 
-				 ffmpeg -i «videoLocation» -y -ss 0 -pix_fmt rgb8 -r 10 -s «w»x«l»  «outputPath»
-				'''
-		}
-	}
 	
 	
 	def boolean idExists(String id) {

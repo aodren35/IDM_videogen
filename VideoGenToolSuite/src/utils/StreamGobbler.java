@@ -2,6 +2,10 @@ package utils;
 
 import java.util.*;
 import java.io.*;
+/*
+ * Classe permettant de consommer les appels aux commandes FFMPEG (cas d'erreurs de compilation par exemple)
+ */
+
 public class StreamGobbler extends Thread
 {
     InputStream is;
@@ -34,7 +38,6 @@ public class StreamGobbler extends Thread
             {
                 if (pw != null)
                     pw.println(line);
-                // System.out.println(type + ">" + line);    
             }
             if (pw != null)
                 pw.flush();

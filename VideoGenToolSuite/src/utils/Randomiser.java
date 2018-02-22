@@ -3,6 +3,11 @@ package utils;
 import java.util.Arrays;
 import java.util.Random;
 
+
+/*
+ * Classe permettant de générer de l'aléatoire dans le média séléctionné
+ */
+
 public class Randomiser {
 	private boolean displayed;
 	private int choices;

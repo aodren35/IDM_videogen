@@ -6,6 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+
+/*
+ * Classe final utilitaire
+ */
 public final class Utils {
 
 	public static int countLine(String loc) throws IOException {
