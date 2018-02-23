@@ -13,33 +13,15 @@ const helmet     = require('helmet');
 const urlLib     = require('url');
 const winston    = require('winston');
 const exec = require('child_process').exec;
-var child = exec('java -jar ./VideoGenerator.jar example9.videogen',
-    function (error, stdout, stderr){
-        console.log('Output -> ' + stdout);
-        if(error !== null){
-            console.log("Error -> "+error);
-        }
-    });
+const fileUpload = require('express-fileupload');
+var path = require('path');
 
-module.exports = child;
 // load all routers
-/*
+var generator      = require('./Generator.js');
 
 // create the app (the secure one)
 const app = express();
-
-// load the database
-var db = new sqlite3.Database(common.DATABASE_PATH);
-
-
-/!*
-db.on('error', function () {
-    console.error('Error loading the database..\n' +
-                  'You may restart the server and fix it.');
-    loggerFile.error('could not load the database, process rebooting..');
-    process.exit(1);
-});
-*!/
+app.use(fileUpload());
 
 // setting command line options to parse
 const cliOptions = [
@@ -72,14 +54,16 @@ if ( options.verbose ) {
     app.use(logger(':method :shortURL - Remote addr :  :remote-addr - :date[clf] - Status : :status - :response-time ms - :res[content-length] bytes'));
 }
 
+/*
 // parse application/x-www-form-urlencoded
 app.use( bodyParser.urlencoded( { extended: false } ));
 // parse application/json
 app.use(bodyParser.json());
 // parse multipart
  app.use(busboy());
+*/
 
-// add some security headers
+/*// add some security headers
 app.use(helmet.xssFilter());
 app.use(helmet.noCache());
 app.use(helmet.noSniff());
@@ -87,21 +71,19 @@ app.use(helmet.hsts({
     maxAge: 15552000
 }));
 // disable powered by header
-app.disable('x-powered-by');
-
-// Inversion of control, mount express routers by passing app to small modules
-/!*login(app, db, loggerFile);
-user(app, db, loggerFile);
-articles(app, db, loggerFile);
-videos(app, db, loggerFile);
-advert(app, db, loggerFile);*!/
+app.disable('x-powered-by');*/
 
 
-// middleware which catch 404
+generator(app, loggerFile);
+
+/*// middleware which catch 404
 app.use(common.middlewares.catch404(loggerFile));
 
 // middleware which catch 500
-app.use(common.middlewares.catch500());
+app.use(common.middlewares.catch500());*/
+
+
+app.use(express.static(path.join(__dirname, 'ressources/gen')));
 
 // Start the service
 var server = http.createServer(app).listen(common.LOCAL_PORT, function () {
@@ -109,8 +91,19 @@ var server = http.createServer(app).listen(common.LOCAL_PORT, function () {
     loggerFile.info('PID is ' + process.pid);
 });
 
+
+
+var child = exec('java -jar ./VideoGenerator.jar example10.videogen init',
+    function (error, stdout, stderr){
+        console.log('Output -> ' + stdout);
+        if(error !== null){
+            console.log("Error -> "+error);
+        }
+    });
+module.exports = child;
+
 // make the objects public (for unit testing)
 module.exports = { server: server};
 
 
-*/
+

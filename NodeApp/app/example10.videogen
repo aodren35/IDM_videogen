@@ -1,0 +1,10 @@
+@author "Aodren Letellier"
+VideoGen {
+	mandatory videoseq v1 "ressources/intro.mp4"
+	mandatory videoseq v6 "ressources/gs1.mp4"
+	mandatory videoseq v7 "ressources/gs2.mp4"
+	mandatory videoseq v8 "ressources/gs3.mp4"
+	mandatory videoseq v9 "ressources/ba_om.mp4"
+	mandatory videoseq v10 "ressources/yg_om.mp4"
+	mandatory videoseq v11 "ressources/yg_asnl.mp4"			
+}
