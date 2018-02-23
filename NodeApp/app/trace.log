@@ -37,3 +37,7 @@
 {"level":"info","message":"PID is 12860","timestamp":"2018-02-23T14:05:01.128Z"}
 {"level":"info","message":"started a http service on localhost: 3000","timestamp":"2018-02-23T14:07:18.002Z"}
 {"level":"info","message":"PID is 8008","timestamp":"2018-02-23T14:07:18.003Z"}
+{"level":"info","message":"started a http service on localhost: 3000","timestamp":"2018-02-23T14:55:53.995Z"}
+{"level":"info","message":"PID is 1184","timestamp":"2018-02-23T14:55:53.996Z"}
+{"level":"info","message":"started a http service on localhost: 3000","timestamp":"2018-02-23T15:37:27.716Z"}
+{"level":"info","message":"PID is 20096","timestamp":"2018-02-23T15:37:27.717Z"}

@@ -1,5 +1,7 @@
 slides-pptx/
 /slides
 /.metadata/
-VideoGenToolSuite/ressources/gen
 .idea
+VideoGenToolSuite\ressources\gen/videos/*
+VideoGenToolSuite\ressources\gen/gif/*
+VideoGenToolSuite\ressources\gen/vignettes/*

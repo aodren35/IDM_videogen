@@ -1,0 +1,25 @@
+
+<h2>Vignettes: </h2>
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+
+    </div>
+  </div>
+</div>
+
+<ngu-carousel
+  [inputs]="carouselTile"
+  (initData)="initDataFn($event)"
+  (carouselLoad)="carouselTileLoad($event)">
+
+  <ngu-tile NguCarouselItem *ngFor="let v of vignettes">
+    <div class="img-container"
+         [ngStyle]="{'background-image': 'url(http://localhost:3000/vignettes/' + v + ')'}">
+    </div>
+  </ngu-tile>
+
+  <button NguCarouselPrev class='leftRs'>&lt;</button>
+  <button NguCarouselNext class='rightRs'>&gt;</button>
+</ngu-carousel>
+<router-outlet></router-outlet>

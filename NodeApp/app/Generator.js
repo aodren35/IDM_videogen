@@ -9,6 +9,16 @@ const exec = require('child_process').exec;
 
 module.exports = function (app, loggerFile) {
 
+    var vignettes = [
+        'example10_0.jpg',
+        'example10_1.jpg',
+        'example10_2.jpg',
+        'example10_3.jpg',
+        'example10_4.jpg',
+        'example10_5.jpg',
+        'example10_6.jpg'
+    ];
+
     // add routes to the app
     const router = express.Router();
     app.use(common.BASE_LOCAL_URL + common.API_VERSION + '/generator', router);
@@ -37,6 +47,10 @@ module.exports = function (app, loggerFile) {
 
             res.send({msg: "File upload", code: 4});
         });
+    });
+
+    router.get('/vignettes', function (req, res) {
+        res.send(vignettes);
     });
 
 }
