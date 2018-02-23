@@ -13,7 +13,7 @@ import utils.StreamGobbler;
 
 @SuppressWarnings("all")
 public class FFMPEGCall {
-  private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/";
+  private final static String PATH_TOOL = "";
   
   private final static String PATH_GEN_RELATIVE = "ressources/gen/";
   
@@ -154,10 +154,27 @@ public class FFMPEGCall {
       while ((!Objects.equal((line = reader.readLine()), null))) {
         lines = (lines + line);
       }
-      int _round = Math.round(Float.parseFloat(lines));
+      int _round = Math.round(this.ParseFloat(lines));
       return (_round - 1);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  public float ParseFloat(final String strNumber) {
+    if (((!Objects.equal(strNumber, null)) && (strNumber.length() > 0))) {
+      try {
+        return Float.parseFloat(strNumber);
+      } catch (final Throwable _t) {
+        if (_t instanceof Exception) {
+          final Exception e = (Exception)_t;
+          return (-1);
+        } else {
+          throw Exceptions.sneakyThrow(_t);
+        }
+      }
+    } else {
+      return 0;
     }
   }
   

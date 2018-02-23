@@ -57,16 +57,13 @@ public class VideoGen {
   
   private FFMPEGCall ffmpeg;
   
-  private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/";
+  private final static String PATH_TOOL = "";
   
   private final static String PATH_GEN_RELATIVE = "ressources/gen/";
   
   private final static String PATH_RESSOURCES = "ressources/";
   
   private final static String PATH_TEMP_PALETTE = "c:/temp/palette.png";
-  
-  public static void main(final String[] args) {
-  }
   
   public VideoGen(final String uri) {
     this.videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI(uri));
@@ -388,10 +385,6 @@ public class VideoGen {
             String _plus_1 = (_plus + ".mp4");
             newLoc = _plus_1;
             this.ffmpeg.generateVideoFilteredWithText(v, v.getLocation(), newLoc);
-            String _videoid_1 = v.getVideoid();
-            String _plus_2 = (((VideoGen.PATH_GEN_RELATIVE + this.tag) + "_") + _videoid_1);
-            String _plus_3 = (_plus_2 + ".mp4");
-            newLoc = _plus_3;
           }
         }
         Filter _filter = v.getFilter();
@@ -430,10 +423,10 @@ public class VideoGen {
           this.ffmpeg.applyFilterBN(newLoc);
         }
         int _duration = v.getDuration();
-        String _plus_4 = (((("file \'" + newLoc) + "\'") + " duration ") + Integer.valueOf(_duration));
-        String _plus_5 = (_plus_4 + " inpoint ");
-        String _plus_6 = (_plus_5 + "0");
-        playlist.add(_plus_6);
+        String _plus_2 = (((("file \'" + newLoc) + "\'") + " duration ") + Integer.valueOf(_duration));
+        String _plus_3 = (_plus_2 + " inpoint ");
+        String _plus_4 = (_plus_3 + "0");
+        playlist.add(_plus_4);
       }
     }
     String playlistStr = "";

@@ -7,7 +7,8 @@ import org.xtext.example.mydsl.videoGen.VideoDescription
 
 public class FFMPEGCall {
 	
-	private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/"
+	// private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/"
+	private final static String PATH_TOOL = ""
 	private final static String PATH_GEN_RELATIVE = "ressources/gen/"
 	private final static String PATH_GEN_VIGNETTES_RELATIVE = "ressources/gen/vignettes/"
 	private final static String PATH_RESSOURCES = "ressources/"
@@ -117,8 +118,19 @@ public class FFMPEGCall {
 		    while ((line = reader.readLine()) != null) {
 		        lines = lines + line;
 		    }
-		    return Math.round(Float.parseFloat(lines))-1;
+		    return Math.round(ParseFloat(lines))-1;
 	}
+	
+	def float ParseFloat(String strNumber) {
+   		if (strNumber != null && strNumber.length() > 0) {
+	       try {
+	          return Float.parseFloat(strNumber);
+	       } catch(Exception e) {
+	          return -1;   // or some value to mark this field is wrong. or make a function validates field first ...
+	       }
+   		}
+   		else return 0;
+}
 	
 	def void generateThumbnail(int id, String loc) {
 		var ffmpegCmd = ffmpegThumbnail(id, loc).toString 
