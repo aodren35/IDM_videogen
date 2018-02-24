@@ -11,6 +11,8 @@ public class FFMPEGCall {
 	private final static String PATH_TOOL = ""
 	private final static String PATH_GEN_RELATIVE = "ressources/gen/"
 	private final static String PATH_GEN_VIGNETTES_RELATIVE = "ressources/gen/vignettes/"
+		private final static String PATH_GEN_GIF_RELATIVE = "ressources/gen/gif/"
+			private final static String PATH_GEN_VIDEOS_RELATIVE = "ressources/gen/videos/"
 	private final static String PATH_RESSOURCES = "ressources/"
 	
 	private String tag = ""
@@ -37,28 +39,33 @@ public class FFMPEGCall {
         return exitVal
 	}
 	
+	def void copy(String source, String target) {
+		var ffmpegCmd = ffmpegCopyCommand(PATH_TOOL + source, PATH_GEN_VIDEOS_RELATIVE + target).toString 
+		launchFfmpegCmd(ffmpegCmd)		
+	}
+	
 	def void generateVideo(String source, String target) {
-		var ffmpegCmd = ffmpegConcatenateCommand(PATH_TOOL + source, PATH_GEN_RELATIVE + target).toString 
+		var ffmpegCmd = ffmpegConcatenateCommand(PATH_TOOL + source, PATH_GEN_VIDEOS_RELATIVE + target).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}
 	
 	def applyFilterFilpH(String string) {
-		var ffmpegCmd = ffmpegFlipH(PATH_TOOL + string, PATH_GEN_RELATIVE + "filtered_"+string).toString 
+		var ffmpegCmd = ffmpegFlipH(PATH_TOOL + PATH_GEN_VIDEOS_RELATIVE+ string, PATH_GEN_VIDEOS_RELATIVE + "filtered_"+string).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}
 	
 	def applyFilterFilpV(String string) {
-		var ffmpegCmd = ffmpegFlipV(PATH_TOOL +PATH_GEN_RELATIVE+ string, PATH_GEN_RELATIVE + "filtered_"+string).toString 
+		var ffmpegCmd = ffmpegFlipV(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ string, PATH_GEN_VIDEOS_RELATIVE + "filtered_"+string).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}
 	
 	def applyFilterNegate(String string) {
-		var ffmpegCmd = ffmpegNegate(PATH_TOOL +PATH_GEN_RELATIVE+ string, PATH_GEN_RELATIVE + "filtered_"+string).toString 
+		var ffmpegCmd = ffmpegNegate(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ string, PATH_GEN_VIDEOS_RELATIVE + "filtered_"+string).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}
 	
 	def applyFilterBN(String string) {
-		var ffmpegCmd = ffmpegBN(PATH_TOOL +PATH_GEN_RELATIVE+ string, PATH_GEN_RELATIVE + "filtered_"+string).toString 
+		var ffmpegCmd = ffmpegBN(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ string, PATH_GEN_VIDEOS_RELATIVE + "filtered_"+string).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}	
 	
@@ -75,15 +82,15 @@ public class FFMPEGCall {
 		}
 		switch desc.text.position {
   			case 'TOP' : {
-  				ffmpegCmd = ffmpegDrawTextTOP(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text,  color, size).toString 
+  				ffmpegCmd = ffmpegDrawTextTOP(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ source, PATH_GEN_VIDEOS_RELATIVE + target, text,  color, size).toString 
   			}
   			case 'BOTTOM' : {
-  				ffmpegCmd = ffmpegDrawTextBOTTOM(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text, color, size).toString 
+  				ffmpegCmd = ffmpegDrawTextBOTTOM(PATH_TOOL + PATH_GEN_VIDEOS_RELATIVE+ source, PATH_GEN_VIDEOS_RELATIVE + target, text, color, size).toString 
   			}
   			case 'CENTER': {
-  				ffmpegCmd = ffmpegDrawTextCENTER(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text, color, size).toString 
+  				ffmpegCmd = ffmpegDrawTextCENTER(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ source, PATH_GEN_VIDEOS_RELATIVE + target, text, color, size).toString 
   			}
-  			default : ffmpegCmd = ffmpegDrawTextCENTER(PATH_TOOL + source, PATH_GEN_RELATIVE + target, text, color, size).toString 
+  			default : ffmpegCmd = ffmpegDrawTextCENTER(PATH_TOOL + PATH_GEN_VIDEOS_RELATIVE+source, PATH_GEN_VIDEOS_RELATIVE + target, text, color, size).toString 
 		}
 		
 		launchFfmpegCmd(ffmpegCmd)
@@ -98,7 +105,7 @@ public class FFMPEGCall {
 		if (t != -1) time = t
 		if (w != -1) width = w
 		if (l != -1) length = l
-		var ffmpegCmd = ffmpegVideoToGif(PATH_TOOL+ PATH_GEN_RELATIVE + source, PATH_TOOL+PATH_GEN_RELATIVE + target, time, width, length).toString 
+		var ffmpegCmd = ffmpegVideoToGif(PATH_TOOL+ PATH_GEN_VIDEOS_RELATIVE + source, PATH_TOOL+PATH_GEN_GIF_RELATIVE + target, time, width, length).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}
 	
@@ -169,7 +176,11 @@ public class FFMPEGCall {
 	'''
 
 	def ffmpegConcatenateCommand(String mpegPlaylistFile, String outputPath) '''
-			 ffmpeg -y -f concat -safe 0 -i «mpegPlaylistFile» -c copy -r 24 «outputPath»
+			 ffmpeg -y -f concat -safe 0 -i «mpegPlaylistFile» -c copy «outputPath»
+		'''
+		
+		def ffmpegCopyCommand(String inputPath, String outputPath) '''
+			 ffmpeg -y -i «inputPath»  -c:v libx264 -preset ultrafast «outputPath»
 		'''
 		
 	def ffmpegComputeDuration(String locationVideo) '''

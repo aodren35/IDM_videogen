@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {VignettesService} from "./shared/vignettes.service";
 import {NguCarousel, NguCarouselService, NguCarouselStore} from "@ngu/carousel";
+import * as myGlobals from './app.config';
 
 
 @Component({
@@ -10,12 +11,18 @@ import {NguCarousel, NguCarouselService, NguCarouselStore} from "@ngu/carousel";
 })
 export class AppComponent implements OnInit{
   private title = 'vg';
-  private vignettes: string[] = [
+  public vignettes: {url: string, name: string, selected: boolean}[] = [
     // "http://localhost:3000/vignettes/example10_0.jpg"
   ];
   private loaded = false;
   private carouselToken: string;
   public carouselTile: NguCarousel;
+
+  public videoUrl = "";
+  public baseStaticUrl = myGlobals.baseStaticUrl;
+
+  videoUploaded = false;
+  clicked = false;
 
   constructor(
     private vignettesService: VignettesService,
@@ -46,17 +53,18 @@ export class AppComponent implements OnInit{
 
   initDataFn(key: NguCarouselStore) {
     this.carouselToken = key.token;
-    console.log("INIT")
-    this.vignettesService.getAllVignettes().subscribe(
-      (response) => {
-        console.log(response)
-        for (const r of response) {
-          this.vignettes.push(r);
+    console.log("INIT", this.vignettes)
+    if (!this.loaded) {
+      this.vignettesService.getAllVignettes().subscribe(
+        (response: { url: string, name: string, selected: boolean }[]) => {
+          for (const r of response) {
+            this.vignettes.push(r);
+          }
+          this.carousel.reset(this.carouselToken);
+          this.loaded = true;
         }
-        this.carousel.reset(this.carouselToken);
-        this.loaded = true;
-      }
-    );
+      );
+    }
   }
 
   resetFn() {
@@ -69,16 +77,26 @@ export class AppComponent implements OnInit{
 
 
   public carouselTileLoad(evt: any) {
-    console.log("TEST")
-    this.vignettesService.getAllVignettes().subscribe(
+    console.log("TEST");
+
+  }
+
+  getVideo() {
+    this.clicked = true;
+    this.videoUploaded = false;
+    this.vignettesService.getVariante().subscribe(
       (response) => {
-        for (const r of response) {
-          this.vignettes.push(r);
-        }
-        this.carousel.reset(this.carouselToken);
-        this.loaded = true;
+        this.videoUrl = response + ".mp4";
+        this.videoUploaded = true;
       }
     );
+  }
 
+  getGif() {
+
+  }
+
+  select(v: any) {
+    v.selected = !v.selected;
   }
 }

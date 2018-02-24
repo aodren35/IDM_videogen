@@ -1,3 +1,6 @@
+import java.util.List;
+
+import org.xtext.example.mydsl.videoGen.VideoDescription;
 
 public class Main {
 
@@ -9,14 +12,17 @@ public class Main {
 			System.out.println(a);
 		}
 		String videogenSpecification = args[0];
-		VideoGen vg = new VideoGen(videogenSpecification);
+		String init = args[1];
+		if (!init.equals("init")) {
+				VideoGen vg = new VideoGen(videogenSpecification);
 				vg.clean();
-				vg.generate();
-				System.out.println((vg.nbVariantes()));
-				System.out.println(vg.nbVariantes() + " " +vg.generateAllVars().size());
-				vg.generateThumbnails();
-				vg.writeStatsToCsv();
-				vg.generateHtml();
+				List<VideoDescription> rdVideo = vg.generateRandomVideo();
+				vg.generateAndCrushFromVideoDescriptions(rdVideo);
+		} else {
+			VideoGen vg = new VideoGen(videogenSpecification);
+			vg.clean();
+			vg.generateThumbnails();
+		}
 				
 	}
 

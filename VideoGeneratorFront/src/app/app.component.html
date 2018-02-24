@@ -1,25 +1,75 @@
+<img class="logo_tilte" src="../assets/srfc.png" />
+<mat-toolbar class="rouge">
+  <span>
+  </span>
+  <h1 class="title">Stade Rennais Football Club - Videos Generator</h1>
+</mat-toolbar>
+<mat-toolbar class="noir"></mat-toolbar>
 
-<h2>Vignettes: </h2>
-<div class="container">
-  <div class="row">
-    <div class="col-md-3">
 
+<!--<div class="container cont">
+  <div class="row title_page">
+    <div class="row rouge">
+      <img class="logo_tilte" src="../assets/srfc.png" />
+      <h1 class="title">Stade Rennais Football Club - Videos Generator</h1>
+    </div>
+    <div class="row noir"></div>
+   &lt;!&ndash; <h1>
+      <img class="logo_tilte" src="../assets/srfc.png" />
+      Stade Rennais Football Club - Videos Generator
+    </h1>&ndash;&gt;
+  </div>-->
+<div class="container-fluid">
+  <div class="row vignettes_title">
+    <div class="col-md-12">
+      <h2>Vignettes</h2>
     </div>
   </div>
+  <div class="row">
+    <ngu-carousel
+      [inputs]="carouselTile"
+      (initData)="initDataFn($event)"
+      (carouselLoad)="carouselTileLoad($event)"
+      class="col-md-12"
+    >
+
+      <ngu-tile NguCarouselItem *ngFor="let v of vignettes" ngStyle="" (click)="select(v)"  class="">
+        <div
+          class="img-container"
+             [ngClass]="{
+            'vignette_selected': v.selected,
+            'vignette_unselected': !v.selected
+            }"
+             [ngStyle]="{'background-image': 'url('+ baseStaticUrl + 'vignettes/' + v.url + ')'}">
+        </div>
+      </ngu-tile>
+
+      <button NguCarouselPrev class='leftRs'>&lt;</button>
+      <button NguCarouselNext class='rightRs'>&gt;</button>
+    </ngu-carousel>
+  </div>
+  <div class="row button_container">
+    <button mat-fab class="button_generate" (click)="getVideo()">
+      <mat-icon aria-label="Generate">video_library</mat-icon>
+    </button>
+    <button mat-fab class="button_gif" (click)="getGif()" *ngIf="videoUploaded">
+      <mat-icon aria-label="Generate">gif</mat-icon>
+    </button>
+  </div>
+
+  <div class="row video_container" *ngIf="clicked">
+    <video width="400" height="222" controls="controls" *ngIf="videoUploaded; else elseBlock">
+      <source src="{{baseStaticUrl + '/videos/'+videoUrl}}" type="video/mp4" />
+    </video>
+  </div>
+  <ng-template #elseBlock>
+    <span></span>
+    <mat-spinner class="spinner" [diameter]="50"></mat-spinner>
+  </ng-template>
 </div>
 
-<ngu-carousel
-  [inputs]="carouselTile"
-  (initData)="initDataFn($event)"
-  (carouselLoad)="carouselTileLoad($event)">
 
-  <ngu-tile NguCarouselItem *ngFor="let v of vignettes">
-    <div class="img-container"
-         [ngStyle]="{'background-image': 'url(http://localhost:3000/vignettes/' + v + ')'}">
-    </div>
-  </ngu-tile>
 
-  <button NguCarouselPrev class='leftRs'>&lt;</button>
-  <button NguCarouselNext class='rightRs'>&gt;</button>
-</ngu-carousel>
+
+
 <router-outlet></router-outlet>

@@ -19,6 +19,10 @@ public class FFMPEGCall {
   
   private final static String PATH_GEN_VIGNETTES_RELATIVE = "ressources/gen/vignettes/";
   
+  private final static String PATH_GEN_GIF_RELATIVE = "ressources/gen/gif/";
+  
+  private final static String PATH_GEN_VIDEOS_RELATIVE = "ressources/gen/videos/";
+  
   private final static String PATH_RESSOURCES = "ressources/";
   
   private String tag = "";
@@ -48,15 +52,20 @@ public class FFMPEGCall {
     }
   }
   
+  public void copy(final String source, final String target) {
+    String ffmpegCmd = this.ffmpegCopyCommand((FFMPEGCall.PATH_TOOL + source), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + target)).toString();
+    this.launchFfmpegCmd(ffmpegCmd);
+  }
+  
   public void generateVideo(final String source, final String target) {
-    String ffmpegCmd = this.ffmpegConcatenateCommand((FFMPEGCall.PATH_TOOL + source), (FFMPEGCall.PATH_GEN_RELATIVE + target)).toString();
+    String ffmpegCmd = this.ffmpegConcatenateCommand((FFMPEGCall.PATH_TOOL + source), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + target)).toString();
     this.launchFfmpegCmd(ffmpegCmd);
   }
   
   public int applyFilterFilpH(final String string) {
     int _xblockexpression = (int) 0;
     {
-      String ffmpegCmd = this.ffmpegFlipH((FFMPEGCall.PATH_TOOL + string), ((FFMPEGCall.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
+      String ffmpegCmd = this.ffmpegFlipH(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + "filtered_") + string)).toString();
       _xblockexpression = this.launchFfmpegCmd(ffmpegCmd);
     }
     return _xblockexpression;
@@ -65,7 +74,7 @@ public class FFMPEGCall {
   public int applyFilterFilpV(final String string) {
     int _xblockexpression = (int) 0;
     {
-      String ffmpegCmd = this.ffmpegFlipV(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
+      String ffmpegCmd = this.ffmpegFlipV(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + "filtered_") + string)).toString();
       _xblockexpression = this.launchFfmpegCmd(ffmpegCmd);
     }
     return _xblockexpression;
@@ -74,7 +83,7 @@ public class FFMPEGCall {
   public int applyFilterNegate(final String string) {
     int _xblockexpression = (int) 0;
     {
-      String ffmpegCmd = this.ffmpegNegate(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
+      String ffmpegCmd = this.ffmpegNegate(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + "filtered_") + string)).toString();
       _xblockexpression = this.launchFfmpegCmd(ffmpegCmd);
     }
     return _xblockexpression;
@@ -83,7 +92,7 @@ public class FFMPEGCall {
   public int applyFilterBN(final String string) {
     int _xblockexpression = (int) 0;
     {
-      String ffmpegCmd = this.ffmpegBN(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_RELATIVE + "filtered_") + string)).toString();
+      String ffmpegCmd = this.ffmpegBN(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + "filtered_") + string)).toString();
       _xblockexpression = this.launchFfmpegCmd(ffmpegCmd);
     }
     return _xblockexpression;
@@ -104,20 +113,20 @@ public class FFMPEGCall {
     if (_position != null) {
       switch (_position) {
         case "TOP":
-          ffmpegCmd = this.ffmpegDrawTextTOP((FFMPEGCall.PATH_TOOL + source), (FFMPEGCall.PATH_GEN_RELATIVE + target), text, color, size).toString();
+          ffmpegCmd = this.ffmpegDrawTextTOP(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + source), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + target), text, color, size).toString();
           break;
         case "BOTTOM":
-          ffmpegCmd = this.ffmpegDrawTextBOTTOM((FFMPEGCall.PATH_TOOL + source), (FFMPEGCall.PATH_GEN_RELATIVE + target), text, color, size).toString();
+          ffmpegCmd = this.ffmpegDrawTextBOTTOM(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + source), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + target), text, color, size).toString();
           break;
         case "CENTER":
-          ffmpegCmd = this.ffmpegDrawTextCENTER((FFMPEGCall.PATH_TOOL + source), (FFMPEGCall.PATH_GEN_RELATIVE + target), text, color, size).toString();
+          ffmpegCmd = this.ffmpegDrawTextCENTER(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + source), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + target), text, color, size).toString();
           break;
         default:
-          ffmpegCmd = this.ffmpegDrawTextCENTER((FFMPEGCall.PATH_TOOL + source), (FFMPEGCall.PATH_GEN_RELATIVE + target), text, color, size).toString();
+          ffmpegCmd = this.ffmpegDrawTextCENTER(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + source), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + target), text, color, size).toString();
           break;
       }
     } else {
-      ffmpegCmd = this.ffmpegDrawTextCENTER((FFMPEGCall.PATH_TOOL + source), (FFMPEGCall.PATH_GEN_RELATIVE + target), text, color, size).toString();
+      ffmpegCmd = this.ffmpegDrawTextCENTER(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + source), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + target), text, color, size).toString();
     }
     this.launchFfmpegCmd(ffmpegCmd);
   }
@@ -136,7 +145,7 @@ public class FFMPEGCall {
     if ((l != (-1))) {
       length = l;
     }
-    String ffmpegCmd = this.ffmpegVideoToGif(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_RELATIVE) + source), ((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_RELATIVE) + target), time, width, length).toString();
+    String ffmpegCmd = this.ffmpegVideoToGif(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + source), ((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_GIF_RELATIVE) + target), time, width, length).toString();
     this.launchFfmpegCmd(ffmpegCmd);
   }
   
@@ -293,7 +302,17 @@ public class FFMPEGCall {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("ffmpeg -y -f concat -safe 0 -i ");
     _builder.append(mpegPlaylistFile);
-    _builder.append(" -c copy -r 24 ");
+    _builder.append(" -c copy ");
+    _builder.append(outputPath);
+    _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
+  public CharSequence ffmpegCopyCommand(final String inputPath, final String outputPath) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("ffmpeg -y -i ");
+    _builder.append(inputPath);
+    _builder.append("  -c:v libx264 -preset ultrafast ");
     _builder.append(outputPath);
     _builder.newLineIfNotEmpty();
     return _builder;

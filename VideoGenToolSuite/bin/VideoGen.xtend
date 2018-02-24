@@ -44,6 +44,8 @@ class VideoGen {
 	private final static String PATH_GEN_RELATIVE = "ressources/gen/"
 	private final static String PATH_RESSOURCES = "ressources/"
 	private final static String PATH_TEMP_PALETTE = "c:/temp/palette.png"
+	private final static String PATH_GEN_GIF_RELATIVE = "ressources/gen/gif/"
+	private final static String PATH_GEN_VIDEOS_RELATIVE = "ressources/gen/videos/"	
 	
 //	def static void main(String[] args) {
 ////		val String example = "example1.videogen"
@@ -215,7 +217,47 @@ class VideoGen {
 		return desc.probability
 	}
 	
-	
+	def List<VideoDescription> generateRandomVideo() {
+		var List<VideoDescription> result = new ArrayList<VideoDescription>()
+		var index = 0
+		for (Media media: videoGenUpdated.medias){
+			
+			if (media instanceof VideoSeq) {			
+				val video = (media as VideoSeq)
+				
+				if (video instanceof MandatoryVideoSeq) {
+					val desc =  video.description
+					result.add(desc)
+					index ++
+						
+				}
+				if (video instanceof OptionalVideoSeq) {
+					val desc =  video.description
+					val rd = new Randomiser();
+					rd.setChoices(0);
+					if (rd.randomize() == 1) {				
+						result.add(desc)
+						index ++
+						
+					}
+					
+					
+				}
+				if (video instanceof AlternativeVideoSeq) {
+					var List<VideoDescription> lempty = new ArrayList<VideoDescription>()
+					val alts = (video as AlternativeVideoSeq)
+					val rd = new Randomiser()
+					rd.setChoices(alts.videodescs.size)
+					
+					val selected = rd.randomize()
+					val videodesc = alts.videodescs.get(selected)
+					result.add(videodesc)
+					index ++
+				}	
+			}
+		}
+		return result
+	}
 	// TODO : ajouter duration si absentes (voir faire une fonction globale qui fait tout)
 	def String generate() {
 		val playlist = newArrayList()
@@ -287,6 +329,60 @@ class VideoGen {
 		
 		
 	}
+
+	def void generateAndCrushFromVideoDescriptions(List<VideoDescription> l) {
+		val playlist = newArrayList()
+		for (VideoDescription v: l) {
+			val newLoc = tag + "_" + v.videoid + ".mp4"
+			ffmpeg.copy(v.location, newLoc)
+			if (v.text !== null){
+				if (v.text.content !== "") {
+					ffmpeg.generateVideoFilteredWithText(v, newLoc, newLoc)
+				}
+			}
+			if (v.filter instanceof FlipFilter) {
+				println("FLIPFILTER")
+				switch ((v.filter as FlipFilter).orientation) {
+					case 'h' : { ffmpeg.applyFilterFilpH(newLoc)}
+					case 'horizontal' : {ffmpeg.applyFilterFilpH(newLoc)}
+					case 'v' : {ffmpeg.applyFilterFilpV(newLoc)}
+					case 'vertical' : {ffmpeg.applyFilterFilpV(newLoc)}
+					default : {}
+				}
+				
+			}
+			if (v.filter instanceof NegateFilter) {
+				ffmpeg.applyFilterNegate(newLoc)
+			}
+			if (v.filter instanceof BlackWhiteFilter) {
+				ffmpeg.applyFilterBN(newLoc)
+			}
+			playlist.add("file '"  + PATH_GEN_VIDEOS_RELATIVE + newLoc + "'")
+		}
+		var playlistStr = ""
+		for (String pl : playlist)
+			playlistStr += pl + "\n"
+		val source = tag+'_playlisttemp.txt'
+		writeInFile(source, playlistStr)
+		ffmpeg.generateVideo(source, tag + '_generated'+'.mp4')
+		ffmpeg.generateGif(tag + '_generated'+'.mp4', tag + '_generated'+'.gif',-1,-1,-1)
+		// Files.delete(Paths.get(source))
+	}
+	
+	def void writeInFile(String filename, String data) {
+		val buffer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "utf-8"))
+		try {
+			buffer.write(data)
+		}
+		catch(IOException e) {
+			throw e
+		}
+		finally {
+			buffer.flush()
+			buffer.close()
+		}
+	}
+	
 
 	def String generateFromVideoDescriptions(List<VideoDescription> l) {
 		val playlist = newArrayList()
@@ -412,19 +508,7 @@ class VideoGen {
 		return duration
 	}
 	
-	def void writeInFile(String filename, String data) {
-		val buffer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "utf-8"))
-		try {
-			buffer.write(data)
-		}
-		catch(IOException e) {
-			throw e
-		}
-		finally {
-			buffer.flush()
-			buffer.close()
-		}
-	}
+	
 	
 	
 	def List<List<VideoDescription>> generateAllVars() {
@@ -511,7 +595,7 @@ class VideoGen {
 				fl.append(",")
 				
 				val playlistTemp = generateFromVideoDescriptions(v)
-				writeInFile(source, playlistTemp)
+				Utils.writeInFile(source, playlistTemp)
 				ffmpeg.generateVideo(source, target+index+format)
 
 				ffmpeg.generateGif(target+index+format, target+index+gif, -1, -1, -1)
@@ -544,7 +628,7 @@ class VideoGen {
 				fl.append(realSize+"")
 				fl.append(",")
 				
-				var pathVarGif = Paths.get(PATH_GEN_RELATIVE + target+index+gif)
+				var pathVarGif = Paths.get(PATH_GEN_RELATIVE + 'gif/' + target+index+gif)
 				var realSizeGif = 0
 				if (pathVar.toFile().exists){
 					var byte[] dataVarGif = Files.readAllBytes(pathVarGif)

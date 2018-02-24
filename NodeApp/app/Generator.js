@@ -10,13 +10,13 @@ const exec = require('child_process').exec;
 module.exports = function (app, loggerFile) {
 
     var vignettes = [
-        'example10_0.jpg',
-        'example10_1.jpg',
-        'example10_2.jpg',
-        'example10_3.jpg',
-        'example10_4.jpg',
-        'example10_5.jpg',
-        'example10_6.jpg'
+        {"url" : 'example10_4.jpg', "name" : "ba_om"},
+        {"url" : 'example10_5.jpg', "name" : "yg_om"},
+        {"url" : 'example10_6.jpg', "name" : "yg_asnl"},
+/*        {"url" : 'example10_0.jpg', "name" : ""},
+        {"url" : 'example10_0.jpg', "name" : ""},
+        {"url" : 'example10_0.jpg', "name" : ""},
+        {"url" : 'example10_0.jpg', "name" : ""},*/
     ];
 
     // add routes to the app
@@ -25,17 +25,12 @@ module.exports = function (app, loggerFile) {
 
     // the route to post credentials
     router.post('/', function (req, res) {
-        if (!req.files)
-            return res.status(400).send('No files were uploaded.');
-
-        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-        var sampleFile = req.files.sampleFile;
-
-        // Use the mv() method to place the file somewhere on your server
-        sampleFile.mv('vg.videogen', function(err) {
-            if (err)
-                return res.status(500).send(err);
-
+        var videos = req.body.videos;
+        var generatedVideogen = generatedVideoGen(videos);
+        fs.writeFile("vg.videogen", generatedVideogen, function(err) {
+            if(err) {
+                return console.log(err);
+            }
             var child = exec('java -jar ./VideoGenerator.jar vg.videogen generate',
                 function (error, stdout, stderr){
                     console.log('Output -> ' + stdout);
@@ -45,12 +40,43 @@ module.exports = function (app, loggerFile) {
                 });
             module.exports = child;
 
-            res.send({msg: "File upload", code: 4});
+            res.send({msg: "Succes", url: 'vg_generated'});
         });
     });
 
     router.get('/vignettes', function (req, res) {
         res.send(vignettes);
+    });
+
+    router.get('/variante', function (req, res){
+        function os_func() {
+            this.execCommand = function(cmd, callback) {
+                exec(cmd, function (error, stdout, stderr){
+                    if (error) {
+                        console.log("Error -> "+error);
+                        return;
+                    }
+                    callback(stdout);
+            });
+            }
+        }
+        var os = new os_func();
+        os.execCommand('java -jar ./VideoGenerator.jar total.videogen generate', function (returnvalue) {
+            res.send({msg: "Succes", url: 'total_generated'});
+        });
+        /*var child = exec('java -jar ./VideoGenerator.jar total.videogen generate',
+            function (error, stdout, stderr){
+                console.log('Output -> ' + stdout);
+                if(error !== null){
+                    console.log("Error -> "+error);
+                }
+            });
+        module.exports = child;
+
+
+        res.send({msg: "Succes", url: 'total_generated'});*/
+
+
     });
 
 }

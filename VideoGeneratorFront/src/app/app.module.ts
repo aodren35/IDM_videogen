@@ -8,6 +8,11 @@ import {VignettesService} from './shared/vignettes.service';
 import {APP_CONFIG, AppConfig} from "./app.config";
 import {HttpClientModule} from "@angular/common/http";
 import {NguCarouselModule} from "@ngu/carousel";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {
+  MatButtonModule, MatButtonToggleModule, MatChipsModule, MatIconModule, MatProgressSpinnerModule,
+  MatToolbarModule
+} from "@angular/material";
 
 
 @NgModule({
@@ -18,7 +23,13 @@ import {NguCarouselModule} from "@ngu/carousel";
     BrowserModule,
     AppRoutingModule,
     NguCarouselModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatChipsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     {provide: APP_CONFIG, useValue: AppConfig},

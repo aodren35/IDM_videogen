@@ -1,6 +1,11 @@
 package utils;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,5 +28,19 @@ public final class Utils {
 	        throw e;
 	    }
 	    return (int) numberOfLines;
+	}
+	
+	public static void writeInFile(String filename, String data) throws UnsupportedEncodingException, IOException {
+		BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "utf-8"));
+		try {
+			buffer.write(data);
+		}
+		catch(IOException e) {
+			throw e;
+		}
+		finally {
+			buffer.flush();
+			buffer.close();
+		}
 	}
 }

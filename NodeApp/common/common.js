@@ -76,6 +76,23 @@ exports.ERROR_409 = {
 };
 
 
+exports.function = {
+    generateVideogen: function(videos) {
+        var result = "";
+        var rd = 0;
+        var index = videos.length()
+        while (index >= 0) {
+            v = videos[rd]
+
+
+            rd = 0
+            index --
+        }
+
+        return result;
+    }
+}
+
 exports.middlewares = {
 
     /**

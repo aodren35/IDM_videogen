@@ -34,6 +34,7 @@ import org.xtext.example.mydsl.videoGen.VideoGeneratorModel;
 import org.xtext.example.mydsl.videoGen.VideoSeq;
 import utils.FFMPEGCall;
 import utils.Randomiser;
+import utils.Utils;
 
 @SuppressWarnings("all")
 public class VideoGen {
@@ -64,6 +65,10 @@ public class VideoGen {
   private final static String PATH_RESSOURCES = "ressources/";
   
   private final static String PATH_TEMP_PALETTE = "c:/temp/palette.png";
+  
+  private final static String PATH_GEN_GIF_RELATIVE = "ressources/gen/gif/";
+  
+  private final static String PATH_GEN_VIDEOS_RELATIVE = "ressources/gen/videos/";
   
   public VideoGen(final String uri) {
     this.videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI(uri));
@@ -286,6 +291,44 @@ public class VideoGen {
     return desc.getProbability();
   }
   
+  public List<VideoDescription> generateRandomVideo() {
+    List<VideoDescription> result = new ArrayList<VideoDescription>();
+    int index = 0;
+    EList<Media> _medias = this.videoGenUpdated.getMedias();
+    for (final Media media : _medias) {
+      if ((media instanceof VideoSeq)) {
+        final VideoSeq video = ((VideoSeq) media);
+        if ((video instanceof MandatoryVideoSeq)) {
+          final VideoDescription desc = ((MandatoryVideoSeq)video).getDescription();
+          result.add(desc);
+          index++;
+        }
+        if ((video instanceof OptionalVideoSeq)) {
+          final VideoDescription desc_1 = ((OptionalVideoSeq)video).getDescription();
+          final Randomiser rd = new Randomiser();
+          rd.setChoices(0);
+          int _randomize = rd.randomize();
+          boolean _equals = (_randomize == 1);
+          if (_equals) {
+            result.add(desc_1);
+            index++;
+          }
+        }
+        if ((video instanceof AlternativeVideoSeq)) {
+          List<VideoDescription> lempty = new ArrayList<VideoDescription>();
+          final AlternativeVideoSeq alts = ((AlternativeVideoSeq) video);
+          final Randomiser rd_1 = new Randomiser();
+          rd_1.setChoices(alts.getVideodescs().size());
+          final int selected = rd_1.randomize();
+          final VideoDescription videodesc = alts.getVideodescs().get(selected);
+          result.add(videodesc);
+          index++;
+        }
+      }
+    }
+    return result;
+  }
+  
   public String generate() {
     final ArrayList<String> playlist = CollectionLiterals.<String>newArrayList();
     int index = 0;
@@ -366,6 +409,93 @@ public class VideoGen {
       playlistStr = (_playlistStr + (pl + "\n"));
     }
     return playlistStr;
+  }
+  
+  public void generateAndCrushFromVideoDescriptions(final List<VideoDescription> l) {
+    final ArrayList<String> playlist = CollectionLiterals.<String>newArrayList();
+    for (final VideoDescription v : l) {
+      {
+        String _videoid = v.getVideoid();
+        String _plus = ((this.tag + "_") + _videoid);
+        final String newLoc = (_plus + ".mp4");
+        this.ffmpeg.copy(v.getLocation(), newLoc);
+        Text _text = v.getText();
+        boolean _tripleNotEquals = (_text != null);
+        if (_tripleNotEquals) {
+          String _content = v.getText().getContent();
+          boolean _tripleNotEquals_1 = (_content != "");
+          if (_tripleNotEquals_1) {
+            this.ffmpeg.generateVideoFilteredWithText(v, newLoc, newLoc);
+          }
+        }
+        Filter _filter = v.getFilter();
+        if ((_filter instanceof FlipFilter)) {
+          InputOutput.<String>println("FLIPFILTER");
+          Filter _filter_1 = v.getFilter();
+          String _orientation = ((FlipFilter) _filter_1).getOrientation();
+          if (_orientation != null) {
+            switch (_orientation) {
+              case "h":
+                this.ffmpeg.applyFilterFilpH(newLoc);
+                break;
+              case "horizontal":
+                this.ffmpeg.applyFilterFilpH(newLoc);
+                break;
+              case "v":
+                this.ffmpeg.applyFilterFilpV(newLoc);
+                break;
+              case "vertical":
+                this.ffmpeg.applyFilterFilpV(newLoc);
+                break;
+              default:
+                break;
+            }
+          } else {
+          }
+        }
+        Filter _filter_2 = v.getFilter();
+        if ((_filter_2 instanceof NegateFilter)) {
+          this.ffmpeg.applyFilterNegate(newLoc);
+        }
+        Filter _filter_3 = v.getFilter();
+        if ((_filter_3 instanceof BlackWhiteFilter)) {
+          this.ffmpeg.applyFilterBN(newLoc);
+        }
+        playlist.add(((("file \'" + VideoGen.PATH_GEN_VIDEOS_RELATIVE) + newLoc) + "\'"));
+      }
+    }
+    String playlistStr = "";
+    for (final String pl : playlist) {
+      String _playlistStr = playlistStr;
+      playlistStr = (_playlistStr + (pl + "\n"));
+    }
+    final String source = (this.tag + "_playlisttemp.txt");
+    this.writeInFile(source, playlistStr);
+    this.ffmpeg.generateVideo(source, ((this.tag + "_generated") + ".mp4"));
+    this.ffmpeg.generateGif(((this.tag + "_generated") + ".mp4"), ((this.tag + "_generated") + ".gif"), (-1), (-1), (-1));
+  }
+  
+  public void writeInFile(final String filename, final String data) {
+    try {
+      FileOutputStream _fileOutputStream = new FileOutputStream(filename);
+      OutputStreamWriter _outputStreamWriter = new OutputStreamWriter(_fileOutputStream, "utf-8");
+      final BufferedWriter buffer = new BufferedWriter(_outputStreamWriter);
+      try {
+        buffer.write(data);
+      } catch (final Throwable _t) {
+        if (_t instanceof IOException) {
+          final IOException e = (IOException)_t;
+          throw e;
+        } else {
+          throw Exceptions.sneakyThrow(_t);
+        }
+      } finally {
+        buffer.flush();
+        buffer.close();
+      }
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
   }
   
   public String generateFromVideoDescriptions(final List<VideoDescription> l) {
@@ -526,29 +656,6 @@ public class VideoGen {
     return duration;
   }
   
-  public void writeInFile(final String filename, final String data) {
-    try {
-      FileOutputStream _fileOutputStream = new FileOutputStream(filename);
-      OutputStreamWriter _outputStreamWriter = new OutputStreamWriter(_fileOutputStream, "utf-8");
-      final BufferedWriter buffer = new BufferedWriter(_outputStreamWriter);
-      try {
-        buffer.write(data);
-      } catch (final Throwable _t) {
-        if (_t instanceof IOException) {
-          final IOException e = (IOException)_t;
-          throw e;
-        } else {
-          throw Exceptions.sneakyThrow(_t);
-        }
-      } finally {
-        buffer.flush();
-        buffer.close();
-      }
-    } catch (Throwable _e) {
-      throw Exceptions.sneakyThrow(_e);
-    }
-  }
-  
   public List<List<VideoDescription>> generateAllVars() {
     List<List<VideoDescription>> result = new ArrayList<List<VideoDescription>>();
     List<VideoDescription> lempty = new ArrayList<VideoDescription>();
@@ -637,7 +744,7 @@ public class VideoGen {
             fl.append(_plus);
             fl.append(",");
             final String playlistTemp = this.generateFromVideoDescriptions(v);
-            this.writeInFile(source, playlistTemp);
+            Utils.writeInFile(source, playlistTemp);
             this.ffmpeg.generateVideo(source, ((target + Integer.valueOf(index)) + format));
             this.ffmpeg.generateGif(((target + Integer.valueOf(index)) + format), ((target + Integer.valueOf(index)) + gif), (-1), (-1), (-1));
             for (final VideoDescription desc_1 : this.allVideos) {
@@ -669,7 +776,7 @@ public class VideoGen {
             String _plus_2 = (Integer.valueOf(realSize) + "");
             fl.append(_plus_2);
             fl.append(",");
-            Path pathVarGif = Paths.get((((VideoGen.PATH_GEN_RELATIVE + target) + Integer.valueOf(index)) + gif));
+            Path pathVarGif = Paths.get(((((VideoGen.PATH_GEN_RELATIVE + "gif/") + target) + Integer.valueOf(index)) + gif));
             int realSizeGif = 0;
             boolean _exists_1 = pathVar.toFile().exists();
             if (_exists_1) {
