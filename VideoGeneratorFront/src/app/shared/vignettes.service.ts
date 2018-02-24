@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import * as myGlobals from '../app.config';
 import 'rxjs/Rx';
+import {ResponseContentType} from "@angular/http";
 
 @Injectable()
 export class VignettesService {
@@ -67,6 +68,29 @@ export class VignettesService {
     ).timeout(50000).map(
       (response: any) => {
         return response.url;
+      },
+      (error => {
+        return null;
+      })
+    );
+  }
+
+  public getGif(url: string): Observable<Blob> {
+    const headers = new HttpHeaders({'Cache-Control': 'no-cache'});
+    const options = {
+      headers: headers,
+      params: {
+      }
+    };
+    return this.http.get(
+      myGlobals.AppUrl.getGif  + url + '.gif',
+      {
+        observe: 'response',
+        responseType: 'blob'
+      }
+    ).timeout(50000).map(
+      (response: any) => {
+        return new Blob([response.body], { type: 'image/gif' });
       },
       (error => {
         return null;

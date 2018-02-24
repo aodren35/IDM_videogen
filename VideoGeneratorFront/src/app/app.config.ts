@@ -22,6 +22,7 @@ export interface IAppUrl {
   allVignettes: string;
   postVideogen: string;
   getVariante: string;
+  getGif: string;
 }
 export const AppConfig: IAppConfig = {
   cacheId: "currentUserMobSat",
@@ -38,7 +39,8 @@ export const AppConfig: IAppConfig = {
 export const AppUrl: IAppUrl = {
   allVignettes: baseUrl + "vignettes",
   postVideogen: baseUrl + "",
-  getVariante: baseUrl + "variante"
+  getVariante: baseUrl + "variante",
+  getGif: baseStaticUrl + "gif/"
 };
 
 export function getToken(): string {

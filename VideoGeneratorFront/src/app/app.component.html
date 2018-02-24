@@ -59,7 +59,7 @@
 
   <div class="row video_container" *ngIf="clicked">
     <video width="400" height="222" controls="controls" *ngIf="videoUploaded; else elseBlock">
-      <source src="{{baseStaticUrl + '/videos/'+videoUrl}}" type="video/mp4" />
+      <source src="{{baseStaticUrl + '/videos/'+videoUrl + '.mp4'}}" type="video/mp4" />
     </video>
   </div>
   <ng-template #elseBlock>

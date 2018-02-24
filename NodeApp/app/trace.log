@@ -49,3 +49,5 @@
 {"level":"info","message":"PID is 21868","timestamp":"2018-02-24T09:15:52.742Z"}
 {"level":"info","message":"started a http service on localhost: 3000","timestamp":"2018-02-24T09:28:45.259Z"}
 {"level":"info","message":"PID is 1536","timestamp":"2018-02-24T09:28:45.259Z"}
+{"level":"info","message":"started a http service on localhost: 3000","timestamp":"2018-02-24T10:51:36.144Z"}
+{"level":"info","message":"PID is 20248","timestamp":"2018-02-24T10:51:36.144Z"}

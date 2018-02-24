@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {VignettesService} from "./shared/vignettes.service";
 import {NguCarousel, NguCarouselService, NguCarouselStore} from "@ngu/carousel";
 import * as myGlobals from './app.config';
+import * as FileSaver from "file-saver";
 
 
 @Component({
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit{
 
   videoUploaded = false;
   clicked = false;
+  gifDownloading = false;
 
   constructor(
     private vignettesService: VignettesService,
@@ -86,14 +88,22 @@ export class AppComponent implements OnInit{
     this.videoUploaded = false;
     this.vignettesService.getVariante().subscribe(
       (response) => {
-        this.videoUrl = response + ".mp4";
+        this.videoUrl = response;
         this.videoUploaded = true;
       }
     );
   }
 
   getGif() {
-
+    this.gifDownloading = true;
+    this.vignettesService.getGif(this.videoUrl).subscribe(
+      response => {
+        FileSaver.saveAs(response,"Gif_" + this.videoUrl+ ".gif");
+        const fileUrl = URL.createObjectURL(response);
+        window.open(fileUrl);
+        this.gifDownloading = false;
+      }
+    );
   }
 
   select(v: any) {
