@@ -1,14 +1,14 @@
 @author "Aodren Letellier"
 VideoGen {
 	alternatives v1 {
-		videoseq "ressources/yg_om.mp4"
-		videoseq v3 "ressources/yg_asnl.mp4"
-		videoseq v4 "ressources/ba_om.mp4"
+		videoseq "ressources/yg_om.mkv"
+		videoseq v3 "ressources/yg_asnl.mkv"
+		videoseq v4 "ressources/ba_om.mkv"
 	}
-	mandatory videoseq "ressources/ba_om.mp4"
+	mandatory videoseq "ressources/ba_om.mkv"
 	alternatives v5 {
-		videoseq "ressources/yg_om.mp4"
-		videoseq v7 "ressources/yg_asnl.mp4"
-		videoseq v8 "ressources/ba_om.mp4"
+		videoseq "ressources/yg_om.mkv"
+		videoseq v7 "ressources/yg_asnl.mkv"
+		videoseq v8 "ressources/ba_om.mkv"
 	}
 }

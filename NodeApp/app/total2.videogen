@@ -1,0 +1,119 @@
+@author "Aodren Letellier"
+VideoGen {
+	mandatory videoseq v1 "ressources/intro.mkv"
+	alternatives v2 {
+	    videoseq v21 "ressources/gs1.mkv" {
+            filter negate
+            text {
+                content "Benjamin Andre contre l'OM"
+                position TOP
+                color "red"
+                }
+		}
+		videoseq v22 "ressources/gs1.mkv" {
+            filter b&w
+            text {
+                content "Benjamin Andre contre l'OM"
+                position TOP
+                color "yellow"
+
+            }
+	}
+	videoseq v23 "ressources/gs1.mkv" {
+            filter flip h
+            text {
+                content "Benjamin Andre contre l'OM"
+                position CENTER
+                color "black"
+            }
+	}
+}
+
+	mandatory videoseq v3 "ressources/ba_om.mkv" {
+	description "Benjamin Andre contre l'OM"
+	text {
+                        content "Benjamin Andre contre l'OM"
+                        position BOTTOM
+                        color "red"
+
+                    }
+	}
+
+	optional videoseq v11 "ressources/sw.mkv"
+    	alternatives v4 {
+    	    videoseq v41 "ressources/gs2.mkv" {
+                filter negate
+                text {
+                    content "Yoann Gourcuff contre l'OM"
+                    position CENTER
+                    color "red"
+                }
+    	}
+    	    videoseq v42 "ressources/gs2.mkv" {
+                filter b&w
+                text {
+                    content "Yoann Gourcuff contre l'OM"
+                    position CENTER
+                    color "yellow"
+                }
+    	}
+    	    videoseq v43 "ressources/gs2.mkv" {
+                filter flip h
+                text {
+                    content "Yoann Gourcuff contre l'OM"
+                    position CENTER
+                    color "black"
+                }
+    	}
+    	}
+
+    	mandatory videoseq v5 "ressources/yg_om.mkv" {
+    	description "Yoann Gourcuff contre l'OM"
+    	text {
+                        content "Yoann Gourcuff contre l'OM"
+                        position BOTTOM
+                        color "red"
+                    }
+    	}
+    	optional videoseq v12 "ressources/sw.mkv"
+
+    		alternatives v6 {
+        	    videoseq v61 "ressources/gs3.mkv" {
+                    filter negate
+                    text {
+                        content "Yoann Gourcuff contre Nancy"
+                        position CENTER
+                        color "red"
+                    }
+        	}
+        	    videoseq v62 "ressources/gs3.mkv" {
+                    filter b&w
+                    text {
+                        content "Yoann Gourcuff contre Nancy"
+                        position CENTER
+                        color "yellow"
+                    }
+        	}
+        	    videoseq v63 "ressources/gs3.mkv" {
+                    filter flip h
+                    text {
+                        content "Yoann Gourcuff contre Nancy"
+                        position CENTER
+                        color "black"
+                    }
+        	}
+        	}
+
+        	mandatory videoseq v7 "ressources/yg_asnl.mkv" {
+        	description "Yoann Gourcuff contre Nancy"
+        	text {
+                        content "Yoann Gourcuff contre Nancy"
+                        position BOTTOM
+                        color "red"
+                    }
+        	 }
+        	 
+        	 mandatory videoseq v13 "ressources/sw.mkv"
+
+
+}

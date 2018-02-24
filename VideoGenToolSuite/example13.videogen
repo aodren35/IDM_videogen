@@ -1,6 +1,6 @@
 @author "Aodren Letellier"
 VideoGen {
-	mandatory videoseq v1 "ressources/ba_om.mp4" {
+	mandatory videoseq v1 "ressources/ba_om.mkv" {
 		filter flip h
 		text {
 					content "benjamin andré contre l'om"

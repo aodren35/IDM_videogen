@@ -10,13 +10,14 @@ const exec = require('child_process').exec;
 module.exports = function (app, loggerFile) {
 
     var vignettes = [
-        {"url" : 'example10_4.jpg', "name" : "ba_om"},
-        {"url" : 'example10_5.jpg', "name" : "yg_om"},
-        {"url" : 'example10_6.jpg', "name" : "yg_asnl"},
-/*        {"url" : 'example10_0.jpg', "name" : ""},
-        {"url" : 'example10_0.jpg', "name" : ""},
-        {"url" : 'example10_0.jpg', "name" : ""},
-        {"url" : 'example10_0.jpg', "name" : ""},*/
+        {"url" : 'example10_7.jpg', "name" : "ba_om"},
+        {"url" : 'example10_6.jpg', "name" : "yg_om"},
+        {"url" : 'example10_5.jpg', "name" : "yg_asnl"},
+        {"url" : 'example10_4.jpg', "name" : "gs1"},
+        {"url" : 'example10_3.jpg', "name" : "gs2"},
+        {"url" : 'example10_2.jpg', "name" : "gs3"},
+        {"url" : 'example10_1.jpg', "name" : "sw"},
+        {"url" : 'example10_0.jpg', "name" : "intro"}
     ];
 
     // add routes to the app
@@ -52,6 +53,7 @@ module.exports = function (app, loggerFile) {
         function os_func() {
             this.execCommand = function(cmd, callback) {
                 exec(cmd, function (error, stdout, stderr){
+                    console.log('Output -> ' + stdout);
                     if (error) {
                         console.log("Error -> "+error);
                         return;
@@ -63,6 +65,38 @@ module.exports = function (app, loggerFile) {
         var os = new os_func();
         os.execCommand('java -jar ./VideoGenerator.jar total.videogen generate', function (returnvalue) {
             res.send({msg: "Succes", url: 'total_generated'});
+        });
+        /*var child = exec('java -jar ./VideoGenerator.jar total.videogen generate',
+            function (error, stdout, stderr){
+                console.log('Output -> ' + stdout);
+                if(error !== null){
+                    console.log("Error -> "+error);
+                }
+            });
+        module.exports = child;
+
+
+        res.send({msg: "Succes", url: 'total_generated'});*/
+
+
+    });
+
+    router.get('/variante2', function (req, res){
+        function os_func() {
+            this.execCommand = function(cmd, callback) {
+                exec(cmd, function (error, stdout, stderr){
+                    console.log('Output -> ' + stdout);
+                    if (error) {
+                        console.log("Error -> "+error);
+                        return;
+                    }
+                    callback(stdout);
+                });
+            }
+        }
+        var os = new os_func();
+        os.execCommand('java -jar ./VideoGenerator.jar total2.videogen generate', function (returnvalue) {
+            res.send({msg: "Succes", url: 'total2_generated'});
         });
         /*var child = exec('java -jar ./VideoGenerator.jar total.videogen generate',
             function (error, stdout, stderr){

@@ -93,7 +93,7 @@ public class Randomiser {
 	private int getDisplayedInAlts() {
 		Random r = new Random();
 		int Low = 0;
-		int High = choices - 1;
+		int High = choices;
 		return r.nextInt(High-Low) + Low;
 	}
 }

@@ -65,7 +65,7 @@ export class VignettesService {
     return this.http.get(
       myGlobals.AppUrl.getVariante,
       options
-    ).timeout(50000).map(
+    ).timeout(500000).map(
       (response: any) => {
         return response.url;
       },
@@ -75,6 +75,25 @@ export class VignettesService {
     );
   }
 
+  public getVariante2(): Observable<any> {
+    const headers = new HttpHeaders({'Cache-Control': 'no-cache'});
+    const options = {
+      headers: headers,
+      params: {
+      }
+    };
+    return this.http.get(
+      myGlobals.AppUrl.getVariante2,
+      options
+    ).timeout(500000).map(
+      (response: any) => {
+        return response.url;
+      },
+      (error => {
+        return null;
+      })
+    );
+  }
   public getGif(url: string): Observable<Blob> {
     const headers = new HttpHeaders({'Cache-Control': 'no-cache'});
     const options = {
@@ -88,7 +107,7 @@ export class VignettesService {
         observe: 'response',
         responseType: 'blob'
       }
-    ).timeout(50000).map(
+    ).timeout(500000).map(
       (response: any) => {
         return new Blob([response.body], { type: 'image/gif' });
       },

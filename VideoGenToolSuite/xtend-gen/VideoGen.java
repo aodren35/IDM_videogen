@@ -323,6 +323,11 @@ public class VideoGen {
           final Randomiser rd_1 = new Randomiser();
           rd_1.setChoices(alts.getVideodescs().size());
           final int selected = rd_1.randomize();
+          int _size = alts.getVideodescs().size();
+          String _plus = ("CHOICES : " + Integer.valueOf(_size));
+          String _plus_1 = (_plus + " SELECTED : ");
+          String _plus_2 = (_plus_1 + Integer.valueOf(selected));
+          InputOutput.<String>println(_plus_2);
           final VideoDescription videodesc = alts.getVideodescs().get(selected);
           result.add(videodesc);
           index++;
@@ -420,7 +425,7 @@ public class VideoGen {
       {
         String _videoid = v.getVideoid();
         String _plus = ((this.tag + "_") + _videoid);
-        final String newLoc = (_plus + ".mp4");
+        String newLoc = (_plus + ".mkv");
         this.ffmpeg.copy(v.getLocation(), newLoc);
         Text _text = v.getText();
         boolean _tripleNotEquals = (_text != null);
@@ -428,27 +433,31 @@ public class VideoGen {
           String _content = v.getText().getContent();
           boolean _tripleNotEquals_1 = (_content != "");
           if (_tripleNotEquals_1) {
-            this.ffmpeg.generateVideoFilteredWithText(v, newLoc, newLoc);
+            final String loc = newLoc;
+            newLoc = ("text_filtered_" + loc);
+            this.ffmpeg.generateVideoFilteredWithText(v, loc, newLoc);
           }
         }
         Filter _filter = v.getFilter();
         if ((_filter instanceof FlipFilter)) {
           InputOutput.<String>println("FLIPFILTER");
+          final String loc_1 = newLoc;
+          newLoc = ("flip_filtered_" + loc_1);
           Filter _filter_1 = v.getFilter();
           String _orientation = ((FlipFilter) _filter_1).getOrientation();
           if (_orientation != null) {
             switch (_orientation) {
               case "h":
-                this.ffmpeg.applyFilterFilpH(newLoc);
+                this.ffmpeg.applyFilterFilpH(loc_1, newLoc);
                 break;
               case "horizontal":
-                this.ffmpeg.applyFilterFilpH(newLoc);
+                this.ffmpeg.applyFilterFilpH(loc_1, newLoc);
                 break;
               case "v":
-                this.ffmpeg.applyFilterFilpV(newLoc);
+                this.ffmpeg.applyFilterFilpV(loc_1, newLoc);
                 break;
               case "vertical":
-                this.ffmpeg.applyFilterFilpV(newLoc);
+                this.ffmpeg.applyFilterFilpV(loc_1, newLoc);
                 break;
               default:
                 break;
@@ -458,11 +467,15 @@ public class VideoGen {
         }
         Filter _filter_2 = v.getFilter();
         if ((_filter_2 instanceof NegateFilter)) {
-          this.ffmpeg.applyFilterNegate(newLoc);
+          final String loc_2 = newLoc;
+          newLoc = ("negate_filtered_" + loc_2);
+          this.ffmpeg.applyFilterNegate(loc_2, newLoc);
         }
         Filter _filter_3 = v.getFilter();
         if ((_filter_3 instanceof BlackWhiteFilter)) {
-          this.ffmpeg.applyFilterBN(newLoc);
+          final String loc_3 = newLoc;
+          newLoc = ("bw_filtered_" + loc_3);
+          this.ffmpeg.applyFilterBN(loc_3, newLoc);
         }
         playlist.add(((("file \'" + VideoGen.PATH_GEN_VIDEOS_RELATIVE) + newLoc) + "\'"));
       }
@@ -474,8 +487,8 @@ public class VideoGen {
     }
     final String source = (this.tag + "_playlisttemp.txt");
     this.writeInFile(source, playlistStr);
-    this.ffmpeg.generateVideo(source, ((this.tag + "_generated") + ".mp4"));
-    this.ffmpeg.generateGif(((this.tag + "_generated") + ".mp4"), ((this.tag + "_generated") + ".gif"), (-1), (-1), (-1));
+    this.ffmpeg.generateVideo(source, ((this.tag + "_generated") + ".mkv"));
+    this.ffmpeg.generateGif(((this.tag + "_generated") + ".mkv"), ((this.tag + "_generated") + ".gif"), (-1), (-1), (-1));
   }
   
   public void writeInFile(final String filename, final String data) {
@@ -505,39 +518,41 @@ public class VideoGen {
     final ArrayList<String> playlist = CollectionLiterals.<String>newArrayList();
     for (final VideoDescription v : l) {
       {
-        String newLoc = v.getLocation();
-        InputOutput.<String>println(newLoc);
+        String _videoid = v.getVideoid();
+        String _plus = ((this.tag + "_") + _videoid);
+        String newLoc = (_plus + ".mkv");
+        this.ffmpeg.copy(v.getLocation(), newLoc);
         Text _text = v.getText();
         boolean _tripleNotEquals = (_text != null);
         if (_tripleNotEquals) {
           String _content = v.getText().getContent();
           boolean _tripleNotEquals_1 = (_content != "");
           if (_tripleNotEquals_1) {
-            String _videoid = v.getVideoid();
-            String _plus = ((this.tag + "_") + _videoid);
-            String _plus_1 = (_plus + ".mp4");
-            newLoc = _plus_1;
-            this.ffmpeg.generateVideoFilteredWithText(v, v.getLocation(), newLoc);
+            final String loc = newLoc;
+            newLoc = ("text_filtered_" + loc);
+            this.ffmpeg.generateVideoFilteredWithText(v, loc, newLoc);
           }
         }
         Filter _filter = v.getFilter();
         if ((_filter instanceof FlipFilter)) {
           InputOutput.<String>println("FLIPFILTER");
+          final String loc_1 = newLoc;
+          newLoc = ("flip_filtered_" + loc_1);
           Filter _filter_1 = v.getFilter();
           String _orientation = ((FlipFilter) _filter_1).getOrientation();
           if (_orientation != null) {
             switch (_orientation) {
               case "h":
-                this.ffmpeg.applyFilterFilpH(newLoc);
+                this.ffmpeg.applyFilterFilpH(loc_1, newLoc);
                 break;
               case "horizontal":
-                this.ffmpeg.applyFilterFilpH(newLoc);
+                this.ffmpeg.applyFilterFilpH(loc_1, newLoc);
                 break;
               case "v":
-                this.ffmpeg.applyFilterFilpV(newLoc);
+                this.ffmpeg.applyFilterFilpV(loc_1, newLoc);
                 break;
               case "vertical":
-                this.ffmpeg.applyFilterFilpV(newLoc);
+                this.ffmpeg.applyFilterFilpV(loc_1, newLoc);
                 break;
               default:
                 break;
@@ -547,19 +562,21 @@ public class VideoGen {
         }
         Filter _filter_2 = v.getFilter();
         if ((_filter_2 instanceof NegateFilter)) {
-          InputOutput.<String>println("NEGATEFILTER");
-          this.ffmpeg.applyFilterNegate(newLoc);
+          final String loc_2 = newLoc;
+          newLoc = ("negate_filtered_" + loc_2);
+          this.ffmpeg.applyFilterNegate(loc_2, newLoc);
         }
         Filter _filter_3 = v.getFilter();
         if ((_filter_3 instanceof BlackWhiteFilter)) {
-          InputOutput.<String>println("BNFILTER");
-          this.ffmpeg.applyFilterBN(newLoc);
+          final String loc_3 = newLoc;
+          newLoc = ("bw_filtered_" + loc_3);
+          this.ffmpeg.applyFilterBN(loc_3, newLoc);
         }
         int _duration = v.getDuration();
-        String _plus_2 = (((("file \'" + newLoc) + "\'") + " duration ") + Integer.valueOf(_duration));
-        String _plus_3 = (_plus_2 + " inpoint ");
-        String _plus_4 = (_plus_3 + "0");
-        playlist.add(_plus_4);
+        String _plus_1 = (((("file \'" + newLoc) + "\'") + " duration ") + Integer.valueOf(_duration));
+        String _plus_2 = (_plus_1 + " inpoint ");
+        String _plus_3 = (_plus_2 + "0");
+        playlist.add(_plus_3);
       }
     }
     String playlistStr = "";
@@ -738,7 +755,7 @@ public class VideoGen {
         int index = 1;
         final String source = ((this.tag + "_") + "playlistTemp.txt");
         String target = ((this.tag + "_") + "gen");
-        String format = ".mp4";
+        String format = ".mkv";
         String gif = ".gif";
         for (final List<VideoDescription> v : this.allVars) {
           {

@@ -40,7 +40,7 @@
             'vignette_selected': v.selected,
             'vignette_unselected': !v.selected
             }"
-             [ngStyle]="{'background-image': 'url('+ baseStaticUrl + 'vignettes/' + v.url + ')'}">
+             [ngStyle]="{'background-image': 'url('+ baseStaticUrl + '/vignettes/' + v.url + ')'}">
         </div>
       </ngu-tile>
 
@@ -55,11 +55,19 @@
     <button mat-fab class="button_gif" (click)="getGif()" *ngIf="videoUploaded">
       <mat-icon aria-label="Generate">gif</mat-icon>
     </button>
+    <button mat-fab class="button_generate" (click)="getVideo2()">
+      <mat-icon aria-label="Generate">stars</mat-icon>
+    </button>
   </div>
 
   <div class="row video_container" *ngIf="clicked">
+<!--    <vg-player *ngIf="videoUploaded; else elseBlock">
+      <video [vgMedia]="media" #media id="singleVideo" preload="auto" controls>
+        <source src="{{baseStaticUrl + '/videos/'+videoUrl + '.mkv'}}" >
+      </video>
+    </vg-player>-->
     <video width="400" height="222" controls="controls" *ngIf="videoUploaded; else elseBlock">
-      <source src="{{baseStaticUrl + '/videos/'+videoUrl + '.mp4'}}" type="video/mp4" />
+      <source src="{{baseStaticUrl + '/videos/'+videoUrl + '.mkv'}}" />
     </video>
   </div>
   <ng-template #elseBlock>

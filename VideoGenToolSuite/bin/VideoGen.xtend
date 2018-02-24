@@ -241,6 +241,7 @@ class VideoGen {
 					rd.setChoices(alts.videodescs.size)
 					
 					val selected = rd.randomize()
+					println("CHOICES : "+alts.videodescs.size + " SELECTED : "+ selected)
 					val videodesc = alts.videodescs.get(selected)
 					result.add(videodesc)
 					index ++
@@ -324,29 +325,37 @@ class VideoGen {
 	def void generateAndCrushFromVideoDescriptions(List<VideoDescription> l) {
 		val playlist = newArrayList()
 		for (VideoDescription v: l) {
-			val newLoc = tag + "_" + v.videoid + ".mp4"
+			var newLoc = tag + "_" + v.videoid + ".mkv"
 			ffmpeg.copy(v.location, newLoc)
 			if (v.text !== null){
 				if (v.text.content !== "") {
-					ffmpeg.generateVideoFilteredWithText(v, newLoc, newLoc)
+					val loc = newLoc
+					newLoc = 'text_filtered_' + loc
+					ffmpeg.generateVideoFilteredWithText(v, loc, newLoc)
 				}
 			}
 			if (v.filter instanceof FlipFilter) {
 				println("FLIPFILTER")
+				val loc = newLoc
+				newLoc = 'flip_filtered_' + loc
 				switch ((v.filter as FlipFilter).orientation) {
-					case 'h' : { ffmpeg.applyFilterFilpH(newLoc)}
-					case 'horizontal' : {ffmpeg.applyFilterFilpH(newLoc)}
-					case 'v' : {ffmpeg.applyFilterFilpV(newLoc)}
-					case 'vertical' : {ffmpeg.applyFilterFilpV(newLoc)}
+					case 'h' : { ffmpeg.applyFilterFilpH(loc, newLoc)}
+					case 'horizontal' : {ffmpeg.applyFilterFilpH(loc, newLoc)}
+					case 'v' : {ffmpeg.applyFilterFilpV(loc, newLoc)}
+					case 'vertical' : {ffmpeg.applyFilterFilpV(loc, newLoc)}
 					default : {}
 				}
 				
 			}
 			if (v.filter instanceof NegateFilter) {
-				ffmpeg.applyFilterNegate(newLoc)
+				val loc = newLoc
+				newLoc = 'negate_filtered_' + loc
+				ffmpeg.applyFilterNegate(loc, newLoc)
 			}
 			if (v.filter instanceof BlackWhiteFilter) {
-				ffmpeg.applyFilterBN(newLoc)
+				val loc = newLoc
+				newLoc = 'bw_filtered_' + loc				
+				ffmpeg.applyFilterBN(loc, newLoc)
 			}
 			playlist.add("file '"  + PATH_GEN_VIDEOS_RELATIVE + newLoc + "'")
 		}
@@ -355,8 +364,8 @@ class VideoGen {
 			playlistStr += pl + "\n"
 		val source = tag+'_playlisttemp.txt'
 		writeInFile(source, playlistStr)
-		ffmpeg.generateVideo(source, tag + '_generated'+'.mp4')
-		ffmpeg.generateGif(tag + '_generated'+'.mp4', tag + '_generated'+'.gif',-1,-1,-1)
+		ffmpeg.generateVideo(source, tag + '_generated'+'.mkv')
+		ffmpeg.generateGif(tag + '_generated'+'.mkv', tag + '_generated'+'.gif',-1,-1,-1)
 		// Files.delete(Paths.get(source))
 	}
 	
@@ -378,32 +387,37 @@ class VideoGen {
 	def String generateFromVideoDescriptions(List<VideoDescription> l) {
 		val playlist = newArrayList()
 		for (VideoDescription v: l) {
-			var newLoc = v.location
-			println(newLoc)
+			var newLoc = tag + "_" + v.videoid + ".mkv"
+			ffmpeg.copy(v.location, newLoc)
 			if (v.text !== null){
 				if (v.text.content !== "") {
-					newLoc = tag + "_" + v.videoid + ".mp4"
-					ffmpeg.generateVideoFilteredWithText(v, v.location, newLoc)
+					val loc = newLoc
+					newLoc = 'text_filtered_' + loc
+					ffmpeg.generateVideoFilteredWithText(v, loc, newLoc)
 				}
 			}
 			if (v.filter instanceof FlipFilter) {
 				println("FLIPFILTER")
+				val loc = newLoc
+				newLoc = 'flip_filtered_' + loc
 				switch ((v.filter as FlipFilter).orientation) {
-					case 'h' : { ffmpeg.applyFilterFilpH(newLoc)}
-					case 'horizontal' : {ffmpeg.applyFilterFilpH(newLoc)}
-					case 'v' : {ffmpeg.applyFilterFilpV(newLoc)}
-					case 'vertical' : {ffmpeg.applyFilterFilpV(newLoc)}
+					case 'h' : { ffmpeg.applyFilterFilpH(loc, newLoc)}
+					case 'horizontal' : {ffmpeg.applyFilterFilpH(loc, newLoc)}
+					case 'v' : {ffmpeg.applyFilterFilpV(loc, newLoc)}
+					case 'vertical' : {ffmpeg.applyFilterFilpV(loc, newLoc)}
 					default : {}
 				}
 				
 			}
 			if (v.filter instanceof NegateFilter) {
-				println("NEGATEFILTER")
-				ffmpeg.applyFilterNegate(newLoc)
+				val loc = newLoc
+				newLoc = 'negate_filtered_' + loc
+				ffmpeg.applyFilterNegate(loc, newLoc)
 			}
 			if (v.filter instanceof BlackWhiteFilter) {
-				println("BNFILTER")
-				ffmpeg.applyFilterBN(newLoc)
+				val loc = newLoc
+				newLoc = 'bw_filtered_' + loc				
+				ffmpeg.applyFilterBN(loc, newLoc)
 			}
 			playlist.add("file '"  + newLoc + "'"+ " duration "+ v.duration + " inpoint " + "0")
 		}
@@ -577,7 +591,7 @@ class VideoGen {
 	        var index = 1;
 	        val source = tag + "_"+"playlistTemp.txt"
 	        var target = tag + "_"+"gen"
-	        var format = ".mp4"
+	        var format = ".mkv"
 	        var gif = ".gif"
 	        
 			for(List<VideoDescription> v : allVars) {

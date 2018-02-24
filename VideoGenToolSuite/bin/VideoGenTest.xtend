@@ -16,6 +16,10 @@ import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Before
 import org.junit.After
+import org.xtext.example.mydsl.videoGen.VideoDescription
+import java.util.List
+import VideoGen
+import java.util.Random
 
 class VideoGenTest {
 
@@ -42,6 +46,16 @@ class VideoGenTest {
 
 	@After
 	def void tearDown() throws Exception {
+	}
+
+
+	@Test
+	def void test() {
+		val file = "total2.videogen"
+		vg = new VideoGen(file)
+		vg.clean()
+		val List<VideoDescription> rdVideo = vg.generateRandomVideo()
+		vg.generateAndCrushFromVideoDescriptions(rdVideo)
 	}
 
 	@Test

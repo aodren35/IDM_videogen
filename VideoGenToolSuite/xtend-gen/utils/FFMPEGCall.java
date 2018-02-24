@@ -65,37 +65,37 @@ public class FFMPEGCall {
     this.launchFfmpegCmd(ffmpegCmd);
   }
   
-  public int applyFilterFilpH(final String string) {
+  public int applyFilterFilpH(final String loc, final String newLoc) {
     int _xblockexpression = (int) 0;
     {
-      String ffmpegCmd = this.ffmpegFlipH(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + "filtered_") + string)).toString();
+      String ffmpegCmd = this.ffmpegFlipH(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + loc), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + newLoc)).toString();
       _xblockexpression = this.launchFfmpegCmd(ffmpegCmd);
     }
     return _xblockexpression;
   }
   
-  public int applyFilterFilpV(final String string) {
+  public int applyFilterFilpV(final String loc, final String newLoc) {
     int _xblockexpression = (int) 0;
     {
-      String ffmpegCmd = this.ffmpegFlipV(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + "filtered_") + string)).toString();
+      String ffmpegCmd = this.ffmpegFlipV(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + loc), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + newLoc)).toString();
       _xblockexpression = this.launchFfmpegCmd(ffmpegCmd);
     }
     return _xblockexpression;
   }
   
-  public int applyFilterNegate(final String string) {
+  public int applyFilterNegate(final String loc, final String newLoc) {
     int _xblockexpression = (int) 0;
     {
-      String ffmpegCmd = this.ffmpegNegate(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + "filtered_") + string)).toString();
+      String ffmpegCmd = this.ffmpegNegate(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + loc), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + newLoc)).toString();
       _xblockexpression = this.launchFfmpegCmd(ffmpegCmd);
     }
     return _xblockexpression;
   }
   
-  public int applyFilterBN(final String string) {
+  public int applyFilterBN(final String loc, final String newLoc) {
     int _xblockexpression = (int) 0;
     {
-      String ffmpegCmd = this.ffmpegBN(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + string), ((FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + "filtered_") + string)).toString();
+      String ffmpegCmd = this.ffmpegBN(((FFMPEGCall.PATH_TOOL + FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE) + loc), (FFMPEGCall.PATH_GEN_VIDEOS_RELATIVE + newLoc)).toString();
       _xblockexpression = this.launchFfmpegCmd(ffmpegCmd);
     }
     return _xblockexpression;
@@ -210,7 +210,7 @@ public class FFMPEGCall {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("ffmpeg -i ");
     _builder.append(inputPath);
-    _builder.append(" -vf \"hflip\" ");
+    _builder.append(" -vf \"hflip\" -acodec copy ");
     _builder.append(outputPath);
     _builder.append(" -y");
     _builder.newLineIfNotEmpty();
@@ -221,7 +221,7 @@ public class FFMPEGCall {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("ffmpeg -i ");
     _builder.append(inputPath);
-    _builder.append(" -vf \"vflip\" ");
+    _builder.append(" -vf \"vflip\" -acodec copy ");
     _builder.append(outputPath);
     _builder.append(" -y");
     _builder.newLineIfNotEmpty();
@@ -232,7 +232,7 @@ public class FFMPEGCall {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("ffmpeg -i ");
     _builder.append(inputPath);
-    _builder.append(" -vf \"negate\" ");
+    _builder.append(" -vf \"negate\" -acodec copy ");
     _builder.append(outputPath);
     _builder.append(" -y");
     _builder.newLineIfNotEmpty();
@@ -243,7 +243,7 @@ public class FFMPEGCall {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("ffmpeg -i ");
     _builder.append(inputPath);
-    _builder.append(" -vf \"hue=s=0\" ");
+    _builder.append(" -vf \"hue=s=0\" -acodec copy ");
     _builder.append(outputPath);
     _builder.append(" -y");
     _builder.newLineIfNotEmpty();
@@ -260,7 +260,7 @@ public class FFMPEGCall {
     _builder.append(size);
     _builder.append(":fontcolor=");
     _builder.append(color);
-    _builder.append("\" ");
+    _builder.append("\" -acodec copy ");
     _builder.append(outputPath);
     _builder.append(" -y");
     _builder.newLineIfNotEmpty();
@@ -277,7 +277,7 @@ public class FFMPEGCall {
     _builder.append(size);
     _builder.append(":fontcolor=");
     _builder.append(color);
-    _builder.append("\" ");
+    _builder.append("\" -acodec copy ");
     _builder.append(outputPath);
     _builder.append(" -y");
     _builder.newLineIfNotEmpty();
@@ -294,7 +294,7 @@ public class FFMPEGCall {
     _builder.append(size);
     _builder.append(":fontcolor=");
     _builder.append(color);
-    _builder.append("\" ");
+    _builder.append("\" -acodec copy ");
     _builder.append(outputPath);
     _builder.append(" -y");
     _builder.newLineIfNotEmpty();
@@ -311,11 +311,21 @@ public class FFMPEGCall {
     return _builder;
   }
   
-  public CharSequence ffmpegCopyCommand(final String inputPath, final String outputPath) {
+  public CharSequence ffmpegCopyCommand2(final String inputPath, final String outputPath) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("ffmpeg -y -i ");
     _builder.append(inputPath);
     _builder.append("  -c:v libx264 -preset ultrafast ");
+    _builder.append(outputPath);
+    _builder.newLineIfNotEmpty();
+    return _builder;
+  }
+  
+  public CharSequence ffmpegCopyCommand(final String inputPath, final String outputPath) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("ffmpeg -y -i ");
+    _builder.append(inputPath);
+    _builder.append("  -c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -pix_fmt yuv420p ");
     _builder.append(outputPath);
     _builder.newLineIfNotEmpty();
     return _builder;

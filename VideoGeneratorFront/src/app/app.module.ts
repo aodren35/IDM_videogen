@@ -13,6 +13,10 @@ import {
   MatButtonModule, MatButtonToggleModule, MatChipsModule, MatIconModule, MatProgressSpinnerModule,
   MatToolbarModule
 } from "@angular/material";
+import {VgCoreModule} from "videogular2/core";
+import {VgControlsModule} from "videogular2/controls";
+import {VgBufferingModule} from "videogular2/buffering";
+import {VgOverlayPlayModule} from "videogular2/overlay-play";
 
 
 @NgModule({
@@ -22,6 +26,10 @@ import {
   imports: [
     BrowserModule,
     AppRoutingModule,
+    VgCoreModule,
+    VgControlsModule,
+    VgOverlayPlayModule,
+    VgBufferingModule,
     NguCarouselModule,
     HttpClientModule,
     BrowserAnimationsModule,

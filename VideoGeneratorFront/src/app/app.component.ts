@@ -94,6 +94,17 @@ export class AppComponent implements OnInit{
     );
   }
 
+  getVideo2() {
+    this.clicked = true;
+    this.videoUploaded = false;
+    this.vignettesService.getVariante2().subscribe(
+      (response) => {
+        this.videoUrl = response;
+        this.videoUploaded = true;
+      }
+    );
+  }
+
   getGif() {
     this.gifDownloading = true;
     this.vignettesService.getGif(this.videoUrl).subscribe(

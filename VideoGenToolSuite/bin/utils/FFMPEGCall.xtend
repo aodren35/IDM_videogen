@@ -53,23 +53,23 @@ public class FFMPEGCall {
 		launchFfmpegCmd(ffmpegCmd)
 	}
 	
-	def applyFilterFilpH(String string) {
-		var ffmpegCmd = ffmpegFlipH(PATH_TOOL + PATH_GEN_VIDEOS_RELATIVE+ string, PATH_GEN_VIDEOS_RELATIVE + "filtered_"+string).toString 
+	def applyFilterFilpH(String loc, String newLoc) {
+		var ffmpegCmd = ffmpegFlipH(PATH_TOOL + PATH_GEN_VIDEOS_RELATIVE+ loc, PATH_GEN_VIDEOS_RELATIVE +newLoc).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}
 	
-	def applyFilterFilpV(String string) {
-		var ffmpegCmd = ffmpegFlipV(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ string, PATH_GEN_VIDEOS_RELATIVE + "filtered_"+string).toString 
+	def applyFilterFilpV(String loc, String newLoc) {
+		var ffmpegCmd = ffmpegFlipV(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ loc, PATH_GEN_VIDEOS_RELATIVE + newLoc).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}
 	
-	def applyFilterNegate(String string) {
-		var ffmpegCmd = ffmpegNegate(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ string, PATH_GEN_VIDEOS_RELATIVE + "filtered_"+string).toString 
+	def applyFilterNegate(String loc, String newLoc) {
+		var ffmpegCmd = ffmpegNegate(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ loc, PATH_GEN_VIDEOS_RELATIVE +newLoc).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}
 	
-	def applyFilterBN(String string) {
-		var ffmpegCmd = ffmpegBN(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ string, PATH_GEN_VIDEOS_RELATIVE + "filtered_"+string).toString 
+	def applyFilterBN(String loc, String newLoc) {
+		var ffmpegCmd = ffmpegBN(PATH_TOOL +PATH_GEN_VIDEOS_RELATIVE+ loc, PATH_GEN_VIDEOS_RELATIVE +newLoc).toString 
 		launchFfmpegCmd(ffmpegCmd)
 	}	
 	
@@ -153,38 +153,41 @@ public class FFMPEGCall {
 	'''
  	
 	def ffmpegFlipH(String inputPath, String outputPath) '''
-		ffmpeg -i «inputPath» -vf "hflip" «outputPath» -y
+		ffmpeg -i «inputPath» -vf "hflip" -acodec copy «outputPath» -y
 	'''
 	
 	def ffmpegFlipV(String inputPath, String outputPath) '''
-		ffmpeg -i «inputPath» -vf "vflip" «outputPath» -y
+		ffmpeg -i «inputPath» -vf "vflip" -acodec copy «outputPath» -y
 	'''
 	
 	def ffmpegNegate(String inputPath, String outputPath) '''
-		ffmpeg -i «inputPath» -vf "negate" «outputPath» -y
+		ffmpeg -i «inputPath» -vf "negate" -acodec copy «outputPath» -y
 	'''
 	
 	def ffmpegBN(String inputPath, String outputPath) '''
-		ffmpeg -i «inputPath» -vf "hue=s=0" «outputPath» -y
+		ffmpeg -i «inputPath» -vf "hue=s=0" -acodec copy «outputPath» -y
 	'''
 
 	def ffmpegDrawTextTOP(String inputPath, String outputPath, String text,   String color, int size) '''
-		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:fontsize=«size»:fontcolor=«color»" «outputPath» -y
+		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:fontsize=«size»:fontcolor=«color»" -acodec copy «outputPath» -y
 	'''
 	
 	def ffmpegDrawTextCENTER(String inputPath, String outputPath, String text,  String color, int size) '''
-		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=«size»:fontcolor=«color»" «outputPath» -y
+		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:y=(h-text_h)/2:fontsize=«size»:fontcolor=«color»" -acodec copy «outputPath» -y
 	'''
 	def ffmpegDrawTextBOTTOM(String inputPath, String outputPath, String text, String color, int size) '''
-		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:y=(h-text_h):fontsize=«size»:fontcolor=«color»" «outputPath» -y
+		ffmpeg -i «inputPath» -vf "drawtext=fontfile='C\:\\Windows\\fonts\\Arial.ttf':text=«text»:x=(w-text_w)/2:y=(h-text_h):fontsize=«size»:fontcolor=«color»" -acodec copy «outputPath» -y
 	'''
 
 	def ffmpegConcatenateCommand(String mpegPlaylistFile, String outputPath) '''
 			 ffmpeg -y -f concat -safe 0 -i «mpegPlaylistFile» -c copy «outputPath»
 		'''
 		
-		def ffmpegCopyCommand(String inputPath, String outputPath) '''
+		def ffmpegCopyCommand2(String inputPath, String outputPath) '''
 			 ffmpeg -y -i «inputPath»  -c:v libx264 -preset ultrafast «outputPath»
+		'''
+		def ffmpegCopyCommand(String inputPath, String outputPath) '''
+			 ffmpeg -y -i «inputPath»  -c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -pix_fmt yuv420p «outputPath»
 		'''
 		
 	def ffmpegComputeDuration(String locationVideo) '''

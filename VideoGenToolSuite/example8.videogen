@@ -1,6 +1,6 @@
 @author "Aodren Letellier"
 VideoGen {
-	optional videoseq v1 "ressources/ba_om.mp4"
+	optional videoseq v1 "ressources/ba_om.mkv"
 			{
 				duration 10
 				probability 50

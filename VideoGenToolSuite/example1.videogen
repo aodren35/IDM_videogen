@@ -1,11 +1,11 @@
 @author "Aodren Letellier"
 VideoGen {
 	
-	mandatory videoseq v1 "ressources/ba_om.mp4"
-	optional videoseq v2 "ressources/ba_om.mp4"
+	mandatory videoseq v1 "ressources/ba_om.mkv"
+	optional videoseq v2 "ressources/ba_om.mkv"
 	alternatives v3 {
-		videoseq v31 "ressources/yg_om.mp4"
-		videoseq v32 "ressources/yg_asnl.mp4"
+		videoseq v31 "ressources/yg_om.mkv"
+		videoseq v32 "ressources/yg_asnl.mkv"
 	}
-	mandatory videoseq v4 "ressources/ba_om.mp4"
+	mandatory videoseq v4 "ressources/ba_om.mkv"
 }

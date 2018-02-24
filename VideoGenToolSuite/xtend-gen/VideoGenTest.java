@@ -1,3 +1,4 @@
+import java.util.List;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.junit.After;
@@ -6,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xtext.example.mydsl.videoGen.VideoDescription;
 import utils.Utils;
 
 @SuppressWarnings("all")
@@ -34,6 +36,16 @@ public class VideoGenTest {
   
   @After
   public void tearDown() throws Exception {
+  }
+  
+  @Test
+  public void test() {
+    final String file = "total2.videogen";
+    VideoGen _videoGen = new VideoGen(file);
+    this.vg = _videoGen;
+    this.vg.clean();
+    final List<VideoDescription> rdVideo = this.vg.generateRandomVideo();
+    this.vg.generateAndCrushFromVideoDescriptions(rdVideo);
   }
   
   @Test

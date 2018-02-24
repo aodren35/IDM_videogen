@@ -3,7 +3,7 @@ import { InjectionToken } from "@angular/core";
 export let APP_CONFIG = new InjectionToken("app.config");
 
  export const baseUrl = "http://localhost:3000/api/v1/generator/";
- export const baseStaticUrl = "http://localhost:3000/";
+ export const baseStaticUrl = "http://localhost:3000";
 
 
 export interface IAppConfig {
@@ -22,6 +22,7 @@ export interface IAppUrl {
   allVignettes: string;
   postVideogen: string;
   getVariante: string;
+  getVariante2: string;
   getGif: string;
 }
 export const AppConfig: IAppConfig = {
@@ -40,7 +41,8 @@ export const AppUrl: IAppUrl = {
   allVignettes: baseUrl + "vignettes",
   postVideogen: baseUrl + "",
   getVariante: baseUrl + "variante",
-  getGif: baseStaticUrl + "gif/"
+  getVariante2: baseUrl + "variante2",
+  getGif: baseStaticUrl + "/gif/"
 };
 
 export function getToken(): string {
