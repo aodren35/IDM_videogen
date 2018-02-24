@@ -1,4 +1,4 @@
-# Projet IDM : SRFV - VidéoGenerator
+# Projet IDM : Stade Rennais Football Club - VidéoGenerator
 
 ## Description
 
