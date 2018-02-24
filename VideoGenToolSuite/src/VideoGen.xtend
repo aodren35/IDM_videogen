@@ -22,7 +22,10 @@ import java.util.concurrent.TimeUnit
 import org.apache.commons.io.FileUtils
 import java.nio.charset.Charset
 
-
+/*
+ * Classe métier du générateur 
+ * 
+ */
 
 class VideoGen {
 	
@@ -47,19 +50,7 @@ class VideoGen {
 	private final static String PATH_GEN_GIF_RELATIVE = "ressources/gen/gif/"
 	private final static String PATH_GEN_VIDEOS_RELATIVE = "ressources/gen/videos/"	
 	
-//	def static void main(String[] args) {
-////		val String example = "example1.videogen"
-////		val String playlistExample = "playlist.txt"
-////		val String targetExample = "ro4.mp4"
-////    	var videogen = generate(example)
-////    	writeInFile(playlistExample, videogen)
-////    	generateVideo(playlistExample, targetExample)
-////    	generateThumbnails(example)
-////    	writeStatsToCsv()
-//    	
-//    	// new VideoGenHelper().saveVideoGenerator(URI.createURI("example1.videogen"), videoGenUpdated)
-//    	println("")
-//  	}
+
   	
   	new(String uri) {
   		videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI(uri))
@@ -564,7 +555,7 @@ class VideoGen {
 	def void writeStatsToCsv() {
 		if (!allVideos.isEmpty()) {
 			var PrintWriter pw = null
-			var File file = new File("C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/ressources/stats/"+ tag + "_"+"vars_size.csv")
+			var File file = new File("ressources/stats/"+ tag + "_"+"vars_size.csv")
 			var fl = new FileWriter(file);
 			
 	     

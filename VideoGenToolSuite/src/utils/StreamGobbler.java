@@ -2,6 +2,7 @@ package utils;
 
 import java.util.*;
 import java.io.*;
+
 /*
  * Classe permettant de consommer les appels aux commandes FFMPEG (cas d'erreurs de compilation par exemple)
  */

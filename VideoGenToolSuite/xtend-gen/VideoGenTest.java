@@ -12,7 +12,7 @@ import utils.Utils;
 public class VideoGenTest {
   private VideoGen vg;
   
-  private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/";
+  private final static String PATH_TOOL = "";
   
   private final static String PATH_GEN_RELATIVE = "ressources/gen/";
   
@@ -221,6 +221,94 @@ public class VideoGenTest {
       int _nbVariantes = this.vg.nbVariantes();
       int _plus = (_nbVariantes + 1);
       Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example9_vars_size.csv")));
+      Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testExample10() {
+    try {
+      final String file = "example10.videogen";
+      VideoGen _videoGen = new VideoGen(file);
+      this.vg = _videoGen;
+      this.vg.clean();
+      this.vg.generate();
+      InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
+      Assert.assertEquals(this.vg.generateAllVars().size(), this.vg.nbVariantes());
+      this.vg.generateThumbnails();
+      this.vg.writeStatsToCsv();
+      this.vg.generateHtml();
+      int _nbVariantes = this.vg.nbVariantes();
+      int _plus = (_nbVariantes + 1);
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example10_vars_size.csv")));
+      Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testExample11() {
+    try {
+      final String file = "example11.videogen";
+      VideoGen _videoGen = new VideoGen(file);
+      this.vg = _videoGen;
+      this.vg.clean();
+      this.vg.generate();
+      InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
+      Assert.assertEquals(this.vg.generateAllVars().size(), this.vg.nbVariantes());
+      this.vg.generateThumbnails();
+      this.vg.writeStatsToCsv();
+      this.vg.generateHtml();
+      int _nbVariantes = this.vg.nbVariantes();
+      int _plus = (_nbVariantes + 1);
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example11_vars_size.csv")));
+      Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testExample12() {
+    try {
+      final String file = "example12.videogen";
+      VideoGen _videoGen = new VideoGen(file);
+      this.vg = _videoGen;
+      this.vg.clean();
+      this.vg.generate();
+      InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
+      Assert.assertEquals(this.vg.generateAllVars().size(), this.vg.nbVariantes());
+      this.vg.generateThumbnails();
+      this.vg.writeStatsToCsv();
+      this.vg.generateHtml();
+      int _nbVariantes = this.vg.nbVariantes();
+      int _plus = (_nbVariantes + 1);
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example12_vars_size.csv")));
+      Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testExample13() {
+    try {
+      final String file = "example13.videogen";
+      VideoGen _videoGen = new VideoGen(file);
+      this.vg = _videoGen;
+      this.vg.clean();
+      this.vg.generate();
+      InputOutput.<Integer>println(Integer.valueOf(this.vg.nbVariantes()));
+      Assert.assertEquals(this.vg.generateAllVars().size(), this.vg.nbVariantes());
+      this.vg.generateThumbnails();
+      this.vg.writeStatsToCsv();
+      this.vg.generateHtml();
+      int _nbVariantes = this.vg.nbVariantes();
+      int _plus = (_nbVariantes + 1);
+      Assert.assertEquals(_plus, Utils.countLine(((VideoGenTest.PATH_TOOL + VideoGenTest.PATH_STATS_RELATIVE) + "example13_vars_size.csv")));
       Assert.assertEquals(this.vg.getNumberMedias(), this.vg.getNumberOfThumbnail());
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);

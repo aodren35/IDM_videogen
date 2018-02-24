@@ -11,6 +11,9 @@ import org.eclipse.xtext.xbase.lib.InputOutput;
 import org.xtext.example.mydsl.videoGen.VideoDescription;
 import utils.StreamGobbler;
 
+/**
+ * Classe permettant les appels aux commandes FFMPEG
+ */
 @SuppressWarnings("all")
 public class FFMPEGCall {
   private final static String PATH_TOOL = "";

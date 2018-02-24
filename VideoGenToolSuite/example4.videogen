@@ -1,7 +1,7 @@
 @author "Aodren Letellier"
 VideoGen {
-	mandatory videoseq v1 "ressources/1.mp4"
-	mandatory videoseq v2 "ressources/2.mp4"
-	mandatory videoseq v3 "ressources/3.mp4"
+	mandatory videoseq v1 "ressources/gs1.mp4"
+	mandatory videoseq v2 "ressources/gs2.mp4"
+	mandatory videoseq v3 "ressources/gs3.mp4"
 
 }

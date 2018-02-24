@@ -1,0 +1,34 @@
+@author "Aodren Letellier"
+VideoGen {
+	mandatory videoseq v1 "ressources/intro.mp4"
+	alternatives v2 {
+	    videoseq v21 "ressources/gs1.mp4"
+	    videoseq v22 "ressources/gs2.mp4"
+	    videoseq v23 "ressources/gs3.mp4"
+	}
+	alternatives v3 {
+        videoseq v31 "ressources/ba_om.mp4" { description "Benjamin André contre l'OM" }
+        videoseq v32 "ressources/yg_om.mp4" { description "Yoann Gourcuff contre l'OM" }
+        videoseq v33 "ressources/yg_asnl.mp4" { description "Yoann Gourcuff contre Nancy" }
+    }
+    alternatives v4 {
+        videoseq v41 "ressources/gs1.mp4"
+        videoseq v42 "ressources/gs2.mp4"
+        videoseq v43 "ressources/gs3.mp4"
+    }
+    alternatives v5 {
+        videoseq v51 "ressources/ba_om.mp4" { description "Benjamin André contre l'OM" }
+        videoseq v52 "ressources/yg_om.mp4" { description "Yoann Gourcuff contre l'OM" }
+        videoseq v53 "ressources/yg_asnl.mp4" { description "Yoann Gourcuff contre Nancy" }
+    }
+    alternatives v6 {
+        videoseq v61 "ressources/gs1.mp4"
+        videoseq v62 "ressources/gs2.mp4"
+        videoseq v63 "ressources/gs3.mp4"
+    }
+    alternatives v7 {
+        videoseq v71 "ressources/ba_om.mp4" { description "Benjamin André contre l'OM" }
+        videoseq v72 "ressources/yg_om.mp4" { description "Yoann Gourcuff contre l'OM" }
+        videoseq v73 "ressources/yg_asnl.mp4" { description "Yoann Gourcuff contre Nancy" }
+    }
+}

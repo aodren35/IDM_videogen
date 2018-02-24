@@ -5,6 +5,10 @@ import java.io.InputStreamReader
 import java.io.FileOutputStream
 import org.xtext.example.mydsl.videoGen.VideoDescription
 
+/*
+ * Classe permettant les appels aux commandes FFMPEG
+ */
+
 public class FFMPEGCall {
 	
 	// private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/"

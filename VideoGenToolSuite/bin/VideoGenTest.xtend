@@ -20,7 +20,7 @@ import org.junit.After
 class VideoGenTest {
 
 	var VideoGen vg;
-	private final static String PATH_TOOL = "C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/"
+	private final static String PATH_TOOL = ""
 	private final static String PATH_GEN_RELATIVE = "ressources/gen/"
 	private final static String PATH_STATS_RELATIVE = "ressources/stats/"
 
@@ -181,6 +181,71 @@ class VideoGenTest {
 		vg.generateHtml
 		
 		assertEquals(vg.nbVariantes() + 1, Utils.countLine(PATH_TOOL + PATH_STATS_RELATIVE + "example9_vars_size.csv"))
+		assertEquals(vg.getNumberMedias, vg.numberOfThumbnail)
+	}
+	@Test
+	def void testExample10() {
+		val file = "example10.videogen"
+		vg = new VideoGen(file)
+				vg.clean()
+		vg.generate()
+		println(vg.nbVariantes())
+		assertEquals( vg.generateAllVars().size, vg.nbVariantes)
+		
+		vg.generateThumbnails()
+		vg.writeStatsToCsv
+		vg.generateHtml
+		
+		assertEquals(vg.nbVariantes() + 1, Utils.countLine(PATH_TOOL + PATH_STATS_RELATIVE + "example10_vars_size.csv"))
+		assertEquals(vg.getNumberMedias, vg.numberOfThumbnail)
+	}
+	@Test
+	def void testExample11() {
+		val file = "example11.videogen"
+		vg = new VideoGen(file)
+				vg.clean()
+		vg.generate()
+		println(vg.nbVariantes())
+		assertEquals( vg.generateAllVars().size, vg.nbVariantes)
+		
+		vg.generateThumbnails()
+		vg.writeStatsToCsv
+		vg.generateHtml
+		
+		assertEquals(vg.nbVariantes() + 1, Utils.countLine(PATH_TOOL + PATH_STATS_RELATIVE + "example11_vars_size.csv"))
+		assertEquals(vg.getNumberMedias, vg.numberOfThumbnail)
+	}
+	@Test
+	def void testExample12() {
+		val file = "example12.videogen"
+		vg = new VideoGen(file)
+				vg.clean()
+		vg.generate()
+		println(vg.nbVariantes())
+		assertEquals( vg.generateAllVars().size, vg.nbVariantes)
+		
+		vg.generateThumbnails()
+		vg.writeStatsToCsv
+		vg.generateHtml
+		
+		assertEquals(vg.nbVariantes() + 1, Utils.countLine(PATH_TOOL + PATH_STATS_RELATIVE + "example12_vars_size.csv"))
+		assertEquals(vg.getNumberMedias, vg.numberOfThumbnail)
+	}
+	
+	@Test
+	def void testExample13() {
+		val file = "example13.videogen"
+		vg = new VideoGen(file)
+				vg.clean()
+		vg.generate()
+		println(vg.nbVariantes())
+		assertEquals( vg.generateAllVars().size, vg.nbVariantes)
+		
+		vg.generateThumbnails()
+		vg.writeStatsToCsv
+		vg.generateHtml
+		
+		assertEquals(vg.nbVariantes() + 1, Utils.countLine(PATH_TOOL + PATH_STATS_RELATIVE + "example13_vars_size.csv"))
 		assertEquals(vg.getNumberMedias, vg.numberOfThumbnail)
 	}
 	

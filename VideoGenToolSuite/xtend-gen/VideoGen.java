@@ -36,6 +36,9 @@ import utils.FFMPEGCall;
 import utils.Randomiser;
 import utils.Utils;
 
+/**
+ * Classe métier du générateur
+ */
 @SuppressWarnings("all")
 public class VideoGen {
   private VideoGeneratorModel videoGen;
@@ -716,7 +719,7 @@ public class VideoGen {
       boolean _not = (!_isEmpty);
       if (_not) {
         PrintWriter pw = null;
-        File file = new File(((("C:/Users/aodre/Documents/Cours/M2/IDM/IDM_videogen/VideoGenToolSuite/ressources/stats/" + this.tag) + "_") + "vars_size.csv"));
+        File file = new File(((("ressources/stats/" + this.tag) + "_") + "vars_size.csv"));
         FileWriter fl = new FileWriter(file);
         fl.append("id");
         fl.append(",");
