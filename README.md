@@ -62,6 +62,19 @@ Et accessible à l'url "http://localhost:4200/"
 
 ## Concours
 
-La vidéo ./Concours/static_generated.mkv a été généré à partir de la spécification "./Concours/total2.videogen".
-        
+La vidéo ./Concours/static_generated.mkv a été généré à partir de la spécification "./Councours_Screencast/total2.videogen".
+
+## ScreenCast
+
+Un screencast démo du site web est disponible dans le répertoire "./Councours_Screencast/Screencast" :
+* vignettes.png  --> écran d'accueil avec l'ensemble des vignettes générées et récupérées dans le serveur
+* express.png --> fonctionnalité de récupération express (fichier non générée) de la vidéo présentée pour le concours
+* rapide.png --> fonctionnalité de récupération d'une vidéo générée
+* full_feature.png --> fonctionnalité de récupération d'une vidéo full feature générée (assez long lors de l'execution dû aux nombreux appels ffmpeg)
+* gif.png --> fonctionnalité de la récupération du gif généré 
+
+## Fonctionnalité d'analyse
+
+A partir des fichiers CSV, il a été possible d'analyser la corrélation entre la taille rééle et la taille attendue d'une variante, qui se trouvent fortemment corrélées
+(cf: "./Councours_Screencast/correlation.png")
    

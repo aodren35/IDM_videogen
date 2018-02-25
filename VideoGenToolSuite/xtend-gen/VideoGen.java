@@ -73,6 +73,9 @@ public class VideoGen {
   
   private final static String PATH_GEN_VIDEOS_RELATIVE = "ressources/gen/videos/";
   
+  /**
+   * Constructeur à partir d'une URI de spécification videogen
+   */
   public VideoGen(final String uri) {
     this.videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI(uri));
     this.tag = uri.split("\\.")[0];
@@ -82,10 +85,16 @@ public class VideoGen {
     this.numberOfThumbnail = 0;
   }
   
+  /**
+   * Récupère le nombre de vignettes générées
+   */
   public int getNumberOfThumbnail() {
     return this.numberOfThumbnail;
   }
   
+  /**
+   * Récupère le nombre de média
+   */
   public int getNumberMedias() {
     int result = 0;
     EList<Media> _medias = this.videoGen.getMedias();
@@ -105,10 +114,16 @@ public class VideoGen {
     return result;
   }
   
+  /**
+   * Récupère l'ensemble des Video présentes dans la spécification videogen
+   */
   public List<VideoDescription> getAllVideos() {
     return this.allVideos;
   }
   
+  /**
+   * "Nettoie" la spécification videogen, en clarifiant les probabilités, les durées et les id de media
+   */
   public void clean() {
     int index = 0;
     this.videoGenUpdated = this.videoGen;
@@ -294,6 +309,9 @@ public class VideoGen {
     return desc.getProbability();
   }
   
+  /**
+   * Crée une variante de vidéo sous la forme d'une liste de VideoDescription
+   */
   public List<VideoDescription> generateRandomVideo() {
     List<VideoDescription> result = new ArrayList<VideoDescription>();
     int index = 0;
@@ -337,6 +355,11 @@ public class VideoGen {
     return result;
   }
   
+  /**
+   * Crée une variante de vidéo sous la forme d'un string exploitable par ffmpeg
+   * 
+   * !! fonction dépréciée !!
+   */
   public String generate() {
     final ArrayList<String> playlist = CollectionLiterals.<String>newArrayList();
     int index = 0;
@@ -419,6 +442,9 @@ public class VideoGen {
     return playlistStr;
   }
   
+  /**
+   * Génére une vidéo au format .mkv par appels ffmpeg succéssifs, correspondant à une liste de VideoDescription précédemment générée aléatoirement
+   */
   public void generateAndCrushFromVideoDescriptions(final List<VideoDescription> l) {
     final ArrayList<String> playlist = CollectionLiterals.<String>newArrayList();
     for (final VideoDescription v : l) {
@@ -514,6 +540,11 @@ public class VideoGen {
     }
   }
   
+  /**
+   * Génére une vidéo au format .mkv par appels ffmpeg succéssifs, correspondant à une liste de VideoDescription précédemment générée aléatoirement
+   * 
+   *  !! fonction dépréciée !!
+   */
   public String generateFromVideoDescriptions(final List<VideoDescription> l) {
     final ArrayList<String> playlist = CollectionLiterals.<String>newArrayList();
     for (final VideoDescription v : l) {
@@ -587,6 +618,9 @@ public class VideoGen {
     return playlistStr;
   }
   
+  /**
+   * Fonction pour générer l'ensemble des vignettes par média de la spécification
+   */
   public void generateThumbnails() {
     int index = 0;
     EList<Media> _medias = this.videoGen.getMedias();
@@ -635,6 +669,9 @@ public class VideoGen {
     }
   }
   
+  /**
+   * Récupère la durée de la potentielle plus longue variante de vidéo
+   */
   public int getLongestVar() {
     int duration = 0;
     EList<Media> _medias = this.videoGen.getMedias();
@@ -676,6 +713,9 @@ public class VideoGen {
     return duration;
   }
   
+  /**
+   * Génére l'ensemble des variantes possible sous forme d'une liste de liste de VideoDescription
+   */
   public List<List<VideoDescription>> generateAllVars() {
     List<List<VideoDescription>> result = new ArrayList<List<VideoDescription>>();
     List<VideoDescription> lempty = new ArrayList<VideoDescription>();
@@ -730,6 +770,9 @@ public class VideoGen {
     return result;
   }
   
+  /**
+   * Fonction d'analyse, écrivant le résultat dans un fichier CSV
+   */
   public void writeStatsToCsv() {
     try {
       boolean _isEmpty = this.allVideos.isEmpty();
@@ -817,6 +860,9 @@ public class VideoGen {
     }
   }
   
+  /**
+   * Fonction générant un fichier HTML, à partir d'un template, pour afficher l'ensemble des vignettes précédemment générées
+   */
   public void generateHtml() {
     try {
       File htmlTemplateFile = new File((VideoGen.PATH_RESSOURCES + "template.html"));

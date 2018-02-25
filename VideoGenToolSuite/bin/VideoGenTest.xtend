@@ -21,6 +21,13 @@ import java.util.List
 import VideoGen
 import java.util.Random
 
+
+/**
+ * Class de test, définissant plusieurs tests sur différentes spécifications .videoGen, avec des assertions
+ * notamment sur le nombre de vignettes générées, le nombre de média et la qualité des fichiers d'analyse générés
+ * 
+ */
+
 class VideoGenTest {
 
 	var VideoGen vg;

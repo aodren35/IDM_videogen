@@ -51,7 +51,9 @@ class VideoGen {
 	private final static String PATH_GEN_VIDEOS_RELATIVE = "ressources/gen/videos/"	
 	
 
-  	
+ 	/**
+ 	 * Constructeur à partir d'une URI de spécification videogen
+ 	 */ 	
   	new(String uri) {
   		videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI(uri))
   		tag = uri.split("\\.").get(0)
@@ -60,10 +62,16 @@ class VideoGen {
   		numberOfThumbnail = 0
     }
 	
+	/*
+	 * Récupère le nombre de vignettes générées
+	 */
 	def int getNumberOfThumbnail() {
 		return numberOfThumbnail
 	}
-	
+		
+	/*
+	 * Récupère le nombre de média
+	 */
 	def int getNumberMedias() {
 		var result = 0
 		for (Media media :videoGen.medias) {
@@ -81,10 +89,18 @@ class VideoGen {
 		return result
 	}
 	
+	
+	/*
+	 * Récupère l'ensemble des Video présentes dans la spécification videogen
+	 */
 	def List<VideoDescription> getAllVideos() {
 		return allVideos
 	}
 	
+	
+	/*
+	 * "Nettoie" la spécification videogen, en clarifiant les probabilités, les durées et les id de media
+	 */
 	def void clean() {
 		var index = 0
 		videoGenUpdated = videoGen
@@ -208,6 +224,9 @@ class VideoGen {
 		return desc.probability
 	}
 	
+	/*
+	 * Crée une variante de vidéo sous la forme d'une liste de VideoDescription
+	 */
 	def List<VideoDescription> generateRandomVideo() {
 		var List<VideoDescription> result = new ArrayList<VideoDescription>()
 		var index = 0
@@ -250,7 +269,11 @@ class VideoGen {
 		}
 		return result
 	}
-	// TODO : ajouter duration si absentes (voir faire une fonction globale qui fait tout)
+	/*
+	 * Crée une variante de vidéo sous la forme d'un string exploitable par ffmpeg
+	 * 
+	 * !! fonction dépréciée !!
+	 */
 	def String generate() {
 		val playlist = newArrayList()
 		var index = 0
@@ -322,6 +345,9 @@ class VideoGen {
 		
 	}
 
+	/*
+	 * Génére une vidéo au format .mkv par appels ffmpeg succéssifs, correspondant à une liste de VideoDescription précédemment générée aléatoirement 
+	 */
 	def void generateAndCrushFromVideoDescriptions(List<VideoDescription> l) {
 		val playlist = newArrayList()
 		for (VideoDescription v: l) {
@@ -383,7 +409,11 @@ class VideoGen {
 		}
 	}
 	
-
+	/*
+	 * Génére une vidéo au format .mkv par appels ffmpeg succéssifs, correspondant à une liste de VideoDescription précédemment générée aléatoirement 
+	 * 
+	 *  !! fonction dépréciée !!
+	 */
 	def String generateFromVideoDescriptions(List<VideoDescription> l) {
 		val playlist = newArrayList()
 		for (VideoDescription v: l) {
@@ -429,7 +459,9 @@ class VideoGen {
 	
 	
 
-	
+	/**
+	 * Fonction pour générer l'ensemble des vignettes par média de la spécification
+	 */
 	def void generateThumbnails() {
 		// and then visit the model
 		// eg access video sequences:
@@ -473,6 +505,10 @@ class VideoGen {
 		// videoGenUpdated = videoGen
 	}
 
+
+	/**
+	 * Récupère la durée de la potentielle plus longue variante de vidéo
+	 */
 	def int getLongestVar() {
 		// and then visit the model
 		// eg access video sequences: 
@@ -515,7 +551,9 @@ class VideoGen {
 	
 	
 	
-	
+	/** 
+	 * Génére l'ensemble des variantes possible sous forme d'une liste de liste de VideoDescription
+	 */
 	def List<List<VideoDescription>> generateAllVars() {
 		
 		var List<List<VideoDescription>> result = new ArrayList<List<VideoDescription>>()
@@ -566,6 +604,12 @@ class VideoGen {
 		return result
 	}
 
+
+	/**
+	 * 
+	 * Fonction d'analyse, écrivant le résultat dans un fichier CSV
+	 * 
+	 */
 	def void writeStatsToCsv() {
 		if (!allVideos.isEmpty()) {
 			var PrintWriter pw = null
@@ -650,6 +694,12 @@ class VideoGen {
 		}
 	}
 	
+	
+	/**
+	 * 
+	 * Fonction générant un fichier HTML, à partir d'un template, pour afficher l'ensemble des vignettes précédemment générées
+	 * 
+	 */
 	def void generateHtml() {
 		var File htmlTemplateFile = new File(PATH_RESSOURCES + "template.html");
 		var String htmlString = FileUtils.readFileToString(htmlTemplateFile, Charset.forName("UTF-8") );

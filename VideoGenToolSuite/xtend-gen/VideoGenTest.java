@@ -10,6 +10,10 @@ import org.junit.Test;
 import org.xtext.example.mydsl.videoGen.VideoDescription;
 import utils.Utils;
 
+/**
+ * Class de test, définissant plusieurs tests sur différentes spécifications .videoGen, avec des assertions
+ * notamment sur le nombre de vignettes générées, le nombre de média et la qualité des fichiers d'analyse générés
+ */
 @SuppressWarnings("all")
 public class VideoGenTest {
   private VideoGen vg;
