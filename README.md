@@ -58,5 +58,10 @@ Le serveur est déployable en local  via  :
 * La commande 'ng serve', dans le répertoire './VideoGeneratorFront'
 
 Et accessible à l'url "http://localhost:4200/"
+
+
+## Concours
+
+La vidéo ./Concours/static_generated.mkv a été généré à partir de la spécification "./Concours/total2.videogen".
         
    
