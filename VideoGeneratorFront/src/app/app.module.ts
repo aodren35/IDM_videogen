@@ -11,7 +11,7 @@ import {NguCarouselModule} from "@ngu/carousel";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {
   MatButtonModule, MatButtonToggleModule, MatChipsModule, MatIconModule, MatProgressSpinnerModule,
-  MatToolbarModule
+  MatToolbarModule, MatTooltipModule
 } from "@angular/material";
 import {VgCoreModule} from "videogular2/core";
 import {VgControlsModule} from "videogular2/controls";
@@ -37,7 +37,8 @@ import {VgOverlayPlayModule} from "videogular2/overlay-play";
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule
   ],
   providers: [
     {provide: APP_CONFIG, useValue: AppConfig},

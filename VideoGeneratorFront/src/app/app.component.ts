@@ -117,6 +117,17 @@ export class AppComponent implements OnInit{
     );
   }
 
+  getVideoExpress() {
+    this.clicked = true;
+    this.videoUploaded = false;
+    this.videoUrl = "static_generated";
+    setTimeout(
+      ()=> {
+        this.videoUploaded = true;
+      }, 2000
+    )
+  }
+
   select(v: any) {
     v.selected = !v.selected;
   }

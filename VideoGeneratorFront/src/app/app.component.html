@@ -49,14 +49,17 @@
     </ngu-carousel>
   </div>
   <div class="row button_container">
-    <button mat-fab class="button_generate" (click)="getVideo()">
+    <button mat-fab class="button_generate" (click)="getVideoExpress()" matTooltip="Récupérez une vidéo simple! (express)">
+      <mat-icon aria-label="Generate">fast_forward</mat-icon>
+    </button>
+    <button mat-fab class="button_generate" (click)="getVideo()" matTooltip="Générez une vidéo simple! (rapide)">
       <mat-icon aria-label="Generate">video_library</mat-icon>
     </button>
-    <button mat-fab class="button_gif" (click)="getGif()" *ngIf="videoUploaded">
-      <mat-icon aria-label="Generate">gif</mat-icon>
-    </button>
-    <button mat-fab class="button_generate" (click)="getVideo2()">
+    <button mat-fab class="button_generate" (click)="getVideo2()" matTooltip="Générez une vidéo full features! (long)">
       <mat-icon aria-label="Generate">stars</mat-icon>
+    </button>
+    <button mat-fab class="button_gif" (click)="getGif()" *ngIf="videoUploaded" matTooltip="Récupérez le GIF!">
+      <mat-icon aria-label="Generate">gif</mat-icon>
     </button>
   </div>
 

@@ -70,6 +70,7 @@ var server = http.createServer(app).listen(common.LOCAL_PORT, function () {
 
 var child = exec('java -jar ./VideoGenerator.jar example10.videogen init',
     function (error, stdout, stderr){
+        console.log("TEST");
         console.log('Output -> ' + stdout);
         if(error !== null){
             console.log("Error -> "+error);
