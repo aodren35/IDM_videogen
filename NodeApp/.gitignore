@@ -3,6 +3,6 @@ node_modules
 npm-debug.log
 .idea
 ./trace.log
-app/ressources/gen/videos/*
-app/ressources/gen/gif/*
-app/ressources/gen/vignettes/*
+# app/ressources/gen/videos/*
+# app/ressources/gen/gif/*
+# app/ressources/gen/vignettes/*
